@@ -5,8 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.todolist.R
 import com.example.todolist.data.model.TodoItem
 import com.example.todolist.databinding.FragmentToDoListBinding
 import com.example.todolist.util.Importance
@@ -22,9 +24,9 @@ class ToDoListFragment : Fragment() {
     private val adapter by lazy {
         ToDoListAdapter(
             onItemClicked = { pos, item ->
-//                findTopNavController().navigate(R.id.showArticleTextFragment,Bundle().apply {
-//                    putParcelable("article",item)
-//                })
+                findNavController().navigate(R.id.toDoFragment,Bundle().apply {
+                    putParcelable("Todo",item)
+                })
             }
         )
     }
@@ -48,6 +50,16 @@ class ToDoListFragment : Fragment() {
         val todoItem1 = TodoItem("2", "Купить что-то", Importance.LOW, "234fgh2", true, "sfsfghdf", "sfsfghdf")
         val todoItems = listOf(todoItem, todoItem1, todoItem, todoItem, todoItem, todoItem, todoItem, todoItem, todoItem)
         adapter.submitList(todoItems)
+
+        binding.addItem.setOnClickListener {
+            val action = ToDoListFragmentDirections.actionToDoListFragmentToToDoFragment()
+            this.findNavController().navigate(action)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
 }

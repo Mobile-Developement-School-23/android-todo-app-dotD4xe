@@ -1,7 +1,11 @@
 package com.example.todolist.data.model
 
+import android.os.Parcelable
 import com.example.todolist.util.Importance
+import kotlinx.parcelize.Parcelize
 
+
+@Parcelize
 data class TodoItem(
     val id: String,
     val content: String,
@@ -10,4 +14,4 @@ data class TodoItem(
     val isDone: Boolean,
     val dateOfCreation: String,
     val dateOfChange: String?
-)
+): Parcelable
