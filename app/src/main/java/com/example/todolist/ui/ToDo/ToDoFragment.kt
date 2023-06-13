@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.todolist.R
@@ -40,9 +41,10 @@ class ToDoFragment : Fragment() {
         objTodo = arguments?.getParcelable("Todo")
 
         if (objTodo == null) {
-            binding.delete.setTextColor(Color.BLACK)
+
+            binding.delete.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorText))
             binding.delete.alpha = 0.15F
-            binding.labelDelete.setColorFilter(Color.BLACK)
+            binding.labelDelete.setColorFilter(ContextCompat.getColor(requireContext(), R.color.colorText))
             binding.labelDelete.alpha = 0.15F
         } else {
             objTodo?.let{
@@ -82,6 +84,12 @@ class ToDoFragment : Fragment() {
 
                     binding.deadline.text = formattedDate.toString()
                 }
+
+                datePicker.addOnCancelListener {
+                    binding.datePicker.isChecked = false
+                    binding.deadline.text = ""
+                }
+
                 datePicker.show(parentFragmentManager, "DatePickerDialog")
 
             } else binding.deadline.text = ""

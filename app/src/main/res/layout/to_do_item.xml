@@ -7,23 +7,22 @@
     android:id="@+id/item_layout"
     android:clickable="true"
     app:cardCornerRadius="0dp"
-    app:cardBackgroundColor="@color/white"
+    app:cardBackgroundColor="@color/colorBackgroundSecondary"
     android:focusable="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground"
+        android:background="@color/colorBackgroundSecondary"
         android:paddingStart="19dp"
-        android:paddingEnd="14dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp">
+        android:paddingEnd="14dp">
 
         <CheckBox
             android:id="@+id/checkBox"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginTop="3dp"
+            android:buttonTint="@drawable/checkbox_filter_tint"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/content" />
 
@@ -35,24 +34,35 @@
             android:textSize="20sp"
             android:layout_marginEnd="14dp"
             android:layout_marginStart="15dp"
-            android:textColor="@color/black"
+            android:textColor="@color/colorText"
             android:maxLines="3"
             android:ellipsize="end"
             tools:text="test"
             app:layout_constraintStart_toEndOf="@id/checkBox"
             app:layout_constraintEnd_toStartOf="@id/next"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/deadline"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:textSize="16sp"
+            android:alpha="0.3"
+            android:textColor="@color/colorText"
+            app:layout_constraintStart_toStartOf="@id/content"
+            app:layout_constraintTop_toBottomOf="@id/content"/>
 
         <ImageView
             android:id="@+id/next"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginTop="3dp"
-            android:src="@drawable/info"
+            android:src="@drawable/info_icon"
+            android:backgroundTint="@color/red"
+            android:alpha="0.35"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/content" />
+            app:layout_constraintTop_toTopOf="@id/content"
+             />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

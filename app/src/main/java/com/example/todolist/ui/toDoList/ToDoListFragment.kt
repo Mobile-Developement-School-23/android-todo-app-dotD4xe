@@ -6,11 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todolist.R
 import com.example.todolist.data.model.TodoItem
 import com.example.todolist.databinding.FragmentToDoListBinding
+import com.example.todolist.ui.toDoList.recyclerView.ToDoListAdapter
+import com.example.todolist.ui.toDoList.recyclerView.TouchHelperCallback
 import com.example.todolist.util.Importance
 
 
@@ -46,9 +49,15 @@ class ToDoListFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
 
+        val itemTouchHelperCallback = TouchHelperCallback(adapter)
+        val touchHelper = ItemTouchHelper(itemTouchHelperCallback)
+        touchHelper.attachToRecyclerView(recyclerView)
+
         val todoItem = TodoItem("1", "Купить что-то, где-то, зачем-то, но зачем не очень понятно, но точно чтобы показать как обр…", Importance.NORMAL, "2342", true, "sfsdf", "sfsdf")
-        val todoItem1 = TodoItem("2", "Купить что-то", Importance.LOW, "234fgh2", true, "sfsfghdf", "sfsfghdf")
-        val todoItems = listOf(todoItem, todoItem1, todoItem, todoItem, todoItem, todoItem, todoItem, todoItem, todoItem)
+        val todoItem1 = TodoItem("2", "Купить что-то", Importance.LOW, null, true, "sfsfghdf", "sfsfghdf")
+        val todoItem2 = TodoItem("3", "Купить что-то", Importance.LOW, "234fgh2", false, "sfsfghdf", "sfsfghdf")
+        val todoItem3 = TodoItem("4", "Купить что-то", Importance.LOW, "234fgh2", true, "sfsfghdf", "sfsfghdf")
+        val todoItems = listOf(todoItem, todoItem1, todoItem2, todoItem3)
         adapter.submitList(todoItems)
 
         binding.addItem.setOnClickListener {
