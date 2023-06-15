@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="blue">#0A84FF</color>
+    <color name="blue">#007AFF</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="red">#FF453A</color>
+    <color name="red">#FF3B30</color>
     <color name="green">#32D74B</color>
 
+    <color name="ColorBackgroundPopUpMenu">#FFFFFFFF</color>
     <color name="ColorIconInfo">#000000</color>
     <color name="ColorCheckBox">#33000000</color>
     <color name="colorText">#000000</color>
-    <color name="colorTextSecondary">#0A84FF</color>
-    <color name="colorFloatingButton">#0A84FF</color>
+    <color name="colorTextSecondary">#007AFF</color>
+    <color name="colorFloatingButton">#007AFF</color>
     <color name="colorBackground">#F7F6F2</color>
     <color name="colorBackgroundSecondary">#FFFFFFFF</color>
-    <color name="colorIconDelete">#FF453A</color>
+    <color name="colorIconDelete">#FF3B30</color>
     <color name="colorBackIcon">#000000</color>
 </resources>

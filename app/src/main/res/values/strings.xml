@@ -1,10 +1,13 @@
 <resources>
     <string name="app_name">ToDoList</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="done">Выполнено — 5</string>
+    <string name="done">Выполнено — %d</string>
     <string name="save">СОХРАНИТЬ</string>
     <string name="text_for_field">Что надо сделать…\n\n\n</string>
     <string name="importance">Важность</string>
     <string name="deadline_label">Сделать до</string>
     <string name="delete_label">Удалить</string>
+    <string name="no">Нет</string>
+    <string name="low">Низкий</string>
+    <string name="hight">!! Высокий</string>
 </resources>

@@ -5,3 +5,7 @@ enum class Importance {
     NORMAL,
     HIGH
 }
+
+object EyeVisibility {
+    var visible = true
+}

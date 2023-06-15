@@ -32,10 +32,6 @@ class TouchHelperCallback(private val adapter: TouchHelperAdapter) : ItemTouchHe
     }
 
     interface TouchHelperAdapter {
-
-        /**
-         * Called when one item is swiped away
-         */
         fun onItemDismiss(position: Int)
     }
 }
