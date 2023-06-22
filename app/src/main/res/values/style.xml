@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="CustomPopUpStyle" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:itemBackground">@color/ColorBackgroundPopUpMenu</item>
+    </style>
+
+    <style name="Toolbar.TitleTextAppearance" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">25sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Toolbar_ExpandedTitleTextAppearance_Big">
+        <item name="android:textSize">38sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+</resources>

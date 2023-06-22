@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="customBackgroundColor" format="reference|color" />
+    <attr name="customBackgroundColorEditText" format="reference|color" />
+    <attr name="customTextColor" format="reference|color" />
+</resources>
