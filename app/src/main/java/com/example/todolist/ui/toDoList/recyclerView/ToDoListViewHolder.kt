@@ -3,6 +3,7 @@ package com.example.todolist.ui.toDoList.recyclerView
 import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.graphics.Paint
+import android.util.Log
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.widget.CompoundButtonCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -17,17 +18,19 @@ import com.example.todolist.util.toText
 class ToDoListViewHolder(
     private val binding: ToDoItemBinding,
     private val onItemClicked: (Int, TodoItem) -> Unit,
-    private val onItemChangeListener: (() -> Unit)?,
+    private val onItemChangeListener: ((TodoItem) -> Unit)?,
 ) : RecyclerView.ViewHolder(binding.root) {
 
     @SuppressLint("ResourceType")
     fun bind(toDo: TodoItem) {
+        Log.d("ayash", toDo.toString())
         val crossedOut = binding.content.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         val notCrossedOut = binding.content.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
 
         binding.itemLayout.setOnClickListener { onItemClicked.invoke(adapterPosition, toDo) }
 
         if (toDo.deadline != null) {
+            binding.deadline.show()
             binding.deadline.text = toDo.deadline.toText()
         } else {
             binding.deadline.hide()
@@ -54,6 +57,9 @@ class ToDoListViewHolder(
                 binding.importance.show()
             }
             Importance.LOW -> {
+                val colorStateList: ColorStateList? =
+                    AppCompatResources.getColorStateList(binding.checkBox.context, R.drawable.check_box_filter_tint)
+                CompoundButtonCompat.setButtonTintList(binding.checkBox, colorStateList)
                 binding.importance.setImageResource(R.drawable.low_importance)
                 binding.importance.show()
             }
@@ -65,17 +71,11 @@ class ToDoListViewHolder(
             }
         }
 
-        binding.checkBox.setOnCheckedChangeListener { _, isChecked ->
-            toDo.isDone = isChecked
-            if (isChecked) {
-                binding.content.paintFlags = crossedOut
-                binding.content.alpha = 0.3F
-            } else {
-                binding.content.paintFlags = notCrossedOut
-                binding.content.alpha = 1F
-            }
-            //отправляем callback для выставления количества выполненных дел
-            onItemChangeListener?.invoke()
+        binding.checkBox.setOnCheckedChangeListener { _, _ ->
+            onItemChangeListener?.invoke(toDo)
+            Log.d("ayash", "from holder " + toDo.toString())
         }
     }
+
+
 }

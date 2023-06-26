@@ -6,22 +6,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todolist.R
-import com.example.todolist.data.repository.ToDoRepository.Companion.todoItems
+import com.example.todolist.data.model.TodoItem
 import com.example.todolist.databinding.FragmentToDoListBinding
+import com.example.todolist.ui.toDoList.model.TodoListState
 import com.example.todolist.ui.toDoList.recyclerView.ToDoListAdapter
 import com.example.todolist.ui.toDoList.recyclerView.TouchHelperCallback
-import com.example.todolist.util.EyeVisibility
+import com.example.todolist.util.repeatOnCreated
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
-
+@AndroidEntryPoint
 class ToDoListFragment : Fragment() {
 
     private var _binding: FragmentToDoListBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel: ToDoListViewModel by viewModels()
 
     private lateinit var recyclerView: RecyclerView
 
@@ -46,18 +55,16 @@ class ToDoListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+//        viewModel.loadTodoItems()
+
         initRecyclerView()
-        eyeVisibility()
+        subscribeOnViewModel()
 
-        binding.done.text = getString(R.string.done, todoItems.filter { it.isDone }.size)
+        adapter.setOnChangeItemListener { viewModel.checkTodoItem(it) }
 
-        adapter.setOnChangeItemListener {
-            binding.done.text = getString(R.string.done, todoItems.filter { it.isDone }.size)
-            /* вызываем для скрывания только что выполненных айтемов если смотрим только не сделанные задачи */
-            eyeVisibility()
-        }
+        adapter.setOnDeleteItemListener { viewModel.deleteItem(it) }
 
-        binding.visibleTodo.setOnClickListener { clickToEyeVisibility() }
+        binding.visibleTodo.setOnClickListener { viewModel.changeCompletedTodosVisibility() }
 
         binding.addItem.setOnClickListener {
             val action = ToDoListFragmentDirections.actionToDoListFragmentToToDoFragment()
@@ -65,18 +72,31 @@ class ToDoListFragment : Fragment() {
         }
     }
 
-    private fun clickToEyeVisibility() {
-        if (EyeVisibility.visible) {
+    private fun subscribeOnViewModel() {
+        lifecycleScope.launch {
+            viewModel.todoItems.collect { todoListState ->
+                showContent(todoListState)
+            }
+        }
+    }
+
+    private fun showContent(items: TodoListState) {
+        eyeVisibility(items)
+        populateTodoList(items.listItems)
+    }
+
+    private fun populateTodoList(items: List<TodoItem>) {
+        adapter.submitList(items)
+        Log.d("ayash", "DDDDD"+items)
+    }
+
+    private fun eyeVisibility(items: TodoListState) {
+        binding.done.text = getString(R.string.done, items.completed)
+
+        if (items.isDone) {
             binding.visibleTodo.setImageResource(R.drawable.visibility_off)
-            EyeVisibility.visible = false
-            val todoItemsCopy = todoItems.toList()
-            Log.d("TAG", todoItemsCopy.toString())
-            adapter.submitList(todoItemsCopy)
         } else {
-            EyeVisibility.visible = true
             binding.visibleTodo.setImageResource(R.drawable.visibility)
-            val todoItemsCopy = todoItems.toList()
-            adapter.submitList(todoItemsCopy.filter { !it.isDone})
         }
     }
 
@@ -88,17 +108,6 @@ class ToDoListFragment : Fragment() {
         val itemTouchHelperCallback = TouchHelperCallback(adapter)
         val touchHelper = ItemTouchHelper(itemTouchHelperCallback)
         touchHelper.attachToRecyclerView(recyclerView)
-    }
-
-    private fun eyeVisibility() {
-        if (!EyeVisibility.visible) {
-            binding.visibleTodo.setImageResource(R.drawable.visibility_off)
-            val todoItemsCopy = todoItems.toList()
-            adapter.submitList(todoItemsCopy)
-        } else {
-            val todoItemsCopy = todoItems.filter { !it.isDone}
-            adapter.submitList(todoItemsCopy)
-        }
     }
 
     override fun onDestroy() {

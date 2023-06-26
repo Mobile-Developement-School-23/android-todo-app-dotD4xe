@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -14,26 +15,32 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.todolist.R
 import com.example.todolist.data.model.TodoItem
 import com.example.todolist.data.repository.ToDoRepository
-import com.example.todolist.data.repository.ToDoRepository.Companion.itemId
 import com.example.todolist.databinding.FragmentToDoBinding
+import com.example.todolist.ui.toDoList.ToDoListViewModel
 import com.example.todolist.util.Importance
+import com.example.todolist.util.getParcelableCompat
 import com.example.todolist.util.toDate
 import com.example.todolist.util.toText
 import com.example.todolist.util.toast
 import com.google.android.material.datepicker.MaterialDatePicker
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import java.util.UUID
 
-
+@AndroidEntryPoint
 class ToDoFragment : Fragment() {
 
     private var _binding: FragmentToDoBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel: ToDoViewModel by viewModels()
 
     private var objTodo: TodoItem? = null
 
@@ -49,8 +56,7 @@ class ToDoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //deprecated но работает прекрасно
-        objTodo = arguments?.getParcelable("Todo")
+        objTodo = arguments?.getParcelableCompat("Todo")
 
         /* если добавляем дело */
         if (objTodo == null) {
@@ -61,8 +67,8 @@ class ToDoFragment : Fragment() {
             binding.save.setOnClickListener {
                 if (binding.content.text.isBlank()) toast("введите задачу")
                 else {
-                    ToDoRepository().addItem(addNewItem())
-                    findNavController().navigateUp()
+                    viewModel.addItem(addNewItem())
+                    findNavController().navigate(R.id.toDoListFragment)
                 }
             }
         }
@@ -87,7 +93,10 @@ class ToDoFragment : Fragment() {
                 binding.save.setOnClickListener {
                     if (binding.content.text.isBlank()) toast("введите задачу")
                     else {
-                        ToDoRepository().saveItem(saveItem(item))
+                        Log.d("ayash", "save item")
+                        viewModel.saveItem(saveItem(item))
+
+//                        findNavController().navigate(R.id.toDoListFragment)
                         findNavController().navigateUp()
                     }
                 }
@@ -96,8 +105,8 @@ class ToDoFragment : Fragment() {
 
         binding.deleteButton.setOnClickListener {
             if (objTodo != null){
-                ToDoRepository().deleteItem(objTodo!!)
-                findNavController().navigateUp()
+                viewModel.deleteItem(objTodo!!)
+                findNavController().navigate(R.id.toDoListFragment)
             }
         }
 
@@ -111,7 +120,7 @@ class ToDoFragment : Fragment() {
     private fun addNewItem(): TodoItem {
         val calendar: Calendar = Calendar.getInstance()
 
-        val id = itemId.toString()
+        val id = UUID.randomUUID().toString()
         val content = binding.content.text.toString().trim()
         val importance = when(binding.textImportance.text) {
             "Низкий" -> Importance.LOW
@@ -122,7 +131,6 @@ class ToDoFragment : Fragment() {
         val isDone = false
         val dateOfCreation = calendar.time
         val dateOfChange = null
-        itemId += 1
         return TodoItem(id,content, importance, deadline.toDate(), isDone, dateOfCreation, dateOfChange)
     }
 
