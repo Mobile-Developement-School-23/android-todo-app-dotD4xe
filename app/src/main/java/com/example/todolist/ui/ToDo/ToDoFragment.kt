@@ -16,7 +16,9 @@ import android.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import com.example.todolist.R
 import com.example.todolist.data.model.TodoItem
 import com.example.todolist.databinding.FragmentToDoBinding
@@ -66,7 +68,11 @@ class ToDoFragment : Fragment() {
                 if (binding.content.text.isBlank()) toast("введите задачу")
                 else {
                     viewModel.addItem(addNewItem())
-                    findNavController().navigate(R.id.toDoListFragment)
+                    val navOptions = NavOptions.Builder()
+                        .setPopUpTo(R.id.toDoListFragment, true)
+                        .build()
+
+                    findNavController().navigate(R.id.toDoListFragment, null, navOptions )
                 }
             }
         }

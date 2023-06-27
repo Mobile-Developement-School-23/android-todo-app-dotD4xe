@@ -10,6 +10,8 @@ import dagger.Provides
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Singleton
 import androidx.datastore.preferences.core.Preferences
+import com.example.todolist.database.AppDatabase
+import com.example.todolist.database.dao.TodoItemDao
 import com.example.todolist.network.api.TodoApiService
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
@@ -30,8 +32,9 @@ object RepositoryModule {
     @Singleton
     fun provideNoteRepository(
         dataStore: DataStore<Preferences>,
-        todoApiService: TodoApiService
+        todoApiService: TodoApiService,
+        appDatabase: AppDatabase
     ): ToDoRepository {
-        return ToDoRepositoryImpl(dataStore, todoApiService)
+        return ToDoRepositoryImpl(dataStore, todoApiService, appDatabase)
     }
 }

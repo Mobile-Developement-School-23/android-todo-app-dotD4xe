@@ -27,26 +27,26 @@ class ToDoListViewModel @Inject constructor(
 
     private fun loadTodoItems() {
         viewModelScope.launch {
-            _todoItems.update { previousState ->
-                val completedCount: Int
-                val shouldShowCompleted = previousState.isDone
+            repository.getItems().collect { items ->
+                _todoItems.update { previousState ->
+                    val shouldShowCompleted = previousState.isDone
 
-                val items = repository.getItems()
-                    .value
-                    .also { completedCount = it.filter { it.isDone }.size }
-                    .filter {
+                    val filteredItems = items.filter {
                         if (shouldShowCompleted) {
                             true
                         } else {
-                            it.isDone.not()
+                            !it.isDone
                         }
                     }
 
-                TodoListState(
-                    listItems = items,
-                    completed = completedCount,
-                    isDone = previousState.isDone
-                )
+                    val completedCount = items.count { it.isDone }
+
+                    TodoListState(
+                        listItems = filteredItems,
+                        completed = completedCount,
+                        isDone = previousState.isDone
+                    )
+                }
             }
         }
     }
