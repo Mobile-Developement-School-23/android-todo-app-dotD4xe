@@ -19,9 +19,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.todolist.R
 import com.example.todolist.data.model.TodoItem
-import com.example.todolist.data.repository.ToDoRepository
 import com.example.todolist.databinding.FragmentToDoBinding
-import com.example.todolist.ui.toDoList.ToDoListViewModel
 import com.example.todolist.util.Importance
 import com.example.todolist.util.getParcelableCompat
 import com.example.todolist.util.toDate
@@ -82,7 +80,7 @@ class ToDoFragment : Fragment() {
                 }
                 binding.textImportance.text = when (item.importance) {
                     Importance.LOW -> "Низкий"
-                    Importance.NORMAL -> "Нет"
+                    Importance.BASIC -> "Нет"
                     else -> {
                         "!! Высокий"
                     }
@@ -97,7 +95,7 @@ class ToDoFragment : Fragment() {
                         viewModel.saveItem(saveItem(item))
 
 //                        findNavController().navigate(R.id.toDoListFragment)
-                        findNavController().navigateUp()
+                        findNavController().navigate(R.id.toDoListFragment)
                     }
                 }
             }
@@ -116,7 +114,7 @@ class ToDoFragment : Fragment() {
 
         binding.importance.setOnClickListener { showPopup(binding.importance) }
     }
-
+    //совместить 2 метода которые внизу
     private fun addNewItem(): TodoItem {
         val calendar: Calendar = Calendar.getInstance()
 
@@ -124,14 +122,14 @@ class ToDoFragment : Fragment() {
         val content = binding.content.text.toString().trim()
         val importance = when(binding.textImportance.text) {
             "Низкий" -> Importance.LOW
-            "Нет" -> Importance.NORMAL
-            else -> Importance.HIGH
+            "Нет" -> Importance.BASIC
+            else -> Importance.IMPORTANT
         }
         val deadline = binding.deadline.text.toString().ifBlank { null }
         val isDone = false
         val dateOfCreation = calendar.time
-        val dateOfChange = null
-        return TodoItem(id,content, importance, deadline.toDate(), isDone, dateOfCreation, dateOfChange)
+        val lastUpdateBy = "test"
+        return TodoItem(id,content, importance, deadline.toDate(),null, isDone, dateOfCreation, dateOfCreation, lastUpdateBy)
     }
 
     private fun saveItem(item: TodoItem): TodoItem {
@@ -141,14 +139,14 @@ class ToDoFragment : Fragment() {
         val content = binding.content.text.toString()
         val importance = when(binding.textImportance.text) {
             "Низкий" -> Importance.LOW
-            "Нет" -> Importance.NORMAL
-            else -> Importance.HIGH
+            "Нет" -> Importance.BASIC
+            else -> Importance.IMPORTANT
         }
         val deadline = binding.deadline.text.toString().ifBlank { null }
         val isDone = item.isDone
         val dateOfChange = calendar.time
-
-        return TodoItem(id,content, importance, deadline.toDate(), isDone, item.dateOfCreation, dateOfChange)
+        val lastUpdateBy = "test"
+        return TodoItem(id,content, importance, deadline.toDate(), null, isDone, item.dateOfCreation, dateOfChange, lastUpdateBy)
     }
 
     private fun showCalendar(isChecked: Boolean) {

@@ -1,8 +1,7 @@
-package com.example.todolist.network
+package com.example.todolist.network.api
 
 import com.example.todolist.network.model.AddTodoRequest
-import com.example.todolist.network.model.AddTodoRequest1
-import com.example.todolist.network.model.ToDoItem
+import com.example.todolist.network.model.AddTodoRequestList
 import com.example.todolist.network.model.ToDoItemResponse
 import com.example.todolist.network.model.ToDoListResponse
 import retrofit2.http.Body
@@ -19,7 +18,7 @@ interface TodoApiService {
     suspend fun getTodoList(): ToDoListResponse
 
     @PATCH("list")
-    suspend fun updateTodoList(@Header("X-Last-Known-Revision") revision: Int, @Body todoList: AddTodoRequest1): ToDoListResponse
+    suspend fun updateTodoList(@Header("X-Last-Known-Revision") revision: Int, @Body todoList: AddTodoRequestList): ToDoListResponse
 
     @GET("list/{id}")
     suspend fun getTodoItem(@Path("id") id: String): ToDoItemResponse

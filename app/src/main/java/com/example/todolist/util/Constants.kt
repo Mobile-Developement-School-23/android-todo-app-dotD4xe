@@ -6,19 +6,14 @@ enum class Importance {
             return "low"
         }
     },
-    NORMAL {
+    BASIC {
         override fun toString(): String {
             return "basic"
         }
     },
-    HIGH {
+    IMPORTANT {
         override fun toString(): String {
             return "important"
         }
     }
-}
-
-
-object EyeVisibility {
-    var visible = true
 }

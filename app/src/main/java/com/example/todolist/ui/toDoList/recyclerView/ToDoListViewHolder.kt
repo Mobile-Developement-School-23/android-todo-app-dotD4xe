@@ -49,7 +49,7 @@ class ToDoListViewHolder(
 
         /* выставляем стиль CheckBox и картинки в зависимости от importance */
         when(toDo.importance) {
-            Importance.HIGH -> {
+            Importance.IMPORTANT -> {
                 val colorStateList: ColorStateList? =
                     AppCompatResources.getColorStateList(binding.checkBox.context, R.drawable.check_box_filter_tint_high)
                 CompoundButtonCompat.setButtonTintList(binding.checkBox, colorStateList)

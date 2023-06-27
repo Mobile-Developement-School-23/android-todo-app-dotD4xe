@@ -1,6 +1,5 @@
 package com.example.todolist.util
 
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -38,6 +37,16 @@ fun String?.toDate(): Date? {
 fun Date.toText(): String {
     val format = SimpleDateFormat("dd MMMM yyyy", Locale("ru"))
     return format.format(this)
+}
+
+// Extension функция для преобразования Unix timestamp в объект Date
+fun Long.toDateFromUnixTimestamp(): Date {
+    return Date(this * 1000)
+}
+
+// Extension функция для преобразования объекта Date в Unix timestamp
+fun Date.toUnixTimestamp(): Long {
+    return this.time / 1000
 }
 
 fun <T> Flow<T>.repeatOnCreated(lifecycleOwner: LifecycleOwner) {

@@ -1,5 +1,6 @@
-package com.example.todolist.network
+package com.example.todolist.network.retrofit
 
+import com.example.todolist.network.api.TodoApiService
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request

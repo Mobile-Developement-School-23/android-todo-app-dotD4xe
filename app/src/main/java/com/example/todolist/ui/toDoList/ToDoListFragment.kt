@@ -7,9 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,7 +19,6 @@ import com.example.todolist.ui.toDoList.recyclerView.ToDoListAdapter
 import com.example.todolist.ui.toDoList.recyclerView.TouchHelperCallback
 import com.example.todolist.util.repeatOnCreated
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ToDoListFragment : Fragment() {
@@ -73,10 +69,8 @@ class ToDoListFragment : Fragment() {
     }
 
     private fun subscribeOnViewModel() {
-        lifecycleScope.launch {
-            viewModel.todoItems.collect { todoListState ->
-                showContent(todoListState)
-            }
+        viewModel.todoItems.repeatOnCreated(this) {
+            showContent(it)
         }
     }
 
