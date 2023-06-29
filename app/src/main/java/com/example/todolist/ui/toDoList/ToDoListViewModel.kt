@@ -25,7 +25,7 @@ class ToDoListViewModel @Inject constructor(
         loadTodoItems()
     }
 
-    private fun loadTodoItems() {
+    fun loadTodoItems() {
         viewModelScope.launch {
             repository.getItems().collect { items ->
                 _todoItems.update { previousState ->
@@ -35,7 +35,7 @@ class ToDoListViewModel @Inject constructor(
                         if (shouldShowCompleted) {
                             true
                         } else {
-                            !it.isDone
+                            it.isDone.not()
                         }
                     }
 
@@ -48,7 +48,32 @@ class ToDoListViewModel @Inject constructor(
                     )
                 }
             }
+            Log.d("ayash", "loadTodoItems ${todoItems.value.listItems}")
         }
+//        viewModelScope.launch {
+//            _todoItems.update { previousState ->
+//                val completedCount: Int
+//                val shouldShowCompleted = previousState.isCompletedShowed
+//
+//                val items = repository.getItems()
+//                    .value
+//                    .map { it.value }
+//                    .also { completedCount = it.filter { it.isCompleted }.size }
+//                    .filter {
+//                        if (shouldShowCompleted) {
+//                            true
+//                        } else {
+//                            it.isCompleted.not()
+//                        }
+//                    }
+//
+//                TodoListState(
+//                    listItems = items,
+//                    completed = completedCount,
+//                    isDone = previousState.isCompletedShowed
+//                )
+//            }
+//        }
     }
 
     fun checkTodoItem(todoItem: TodoItem) {
@@ -57,9 +82,12 @@ class ToDoListViewModel @Inject constructor(
             repository.saveItem(checkedItem)
             loadTodoItems()
         }
+        Log.d("ayash"," item checked" +checkedItem.toString())
+
     }
 
     fun changeCompletedTodosVisibility() {
+        Log.d("ayash", "clock see1 ${_todoItems.value.listItems}")
         _todoItems.update {
             TodoListState(
                 listItems = it.listItems,

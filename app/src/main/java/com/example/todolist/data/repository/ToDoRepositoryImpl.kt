@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.example.todolist.data.model.TodoItem
+import com.example.todolist.data.model.toEntity
 import com.example.todolist.database.AppDatabase
 import com.example.todolist.database.entity.toTodoItemEntityList
 import com.example.todolist.database.entity.toTodoItemList
@@ -29,8 +30,9 @@ class ToDoRepositoryImpl(
     private val dataStoreManager = DataStoreManager(dataStore)
 
     override suspend fun addItem(item: TodoItem) {
-        val revision = dataStoreManager.readRevision()
         try {
+            database.todoItemDao().insertTodoItem(item.toEntity())
+            val revision = dataStoreManager.readRevision()
             val response = todoApiService.addTodoItem(revision, AddTodoRequest(item.toToDoItemDto()))
             dataStoreManager.writeRevision(response.revision)
         } catch (e: Exception) {
@@ -41,6 +43,7 @@ class ToDoRepositoryImpl(
     override suspend fun saveItem(item: TodoItem) {
         val revision = dataStoreManager.readRevision()
         try {
+            database.todoItemDao().updateTodoItem(item.toEntity())
             val response = todoApiService.updateTodoItem(item.id, revision, AddTodoRequest(item.toToDoItemDto()))
             dataStoreManager.writeRevision(response.revision)
         } catch (e: Exception) {
@@ -51,6 +54,7 @@ class ToDoRepositoryImpl(
     override suspend fun deleteItem(item: TodoItem) {
         val revision = dataStoreManager.readRevision()
         try {
+            database.todoItemDao().deleteTodoItem(item.toEntity())
             val response = todoApiService.deleteTodoItem(item.id, revision)
             dataStoreManager.writeRevision(response.revision)
         } catch (e: Exception) {
@@ -66,10 +70,12 @@ class ToDoRepositoryImpl(
                 database.todoItemDao().insertTodoItems(it.toTodoItemEntityList())
             }
             dataStoreManager.writeRevision(response.revision)
-            Log.d("ayash", response.revision.toString())
+            Log.d("ayash","get item" +  response.list.toString())
+            Log.d("ayash","get item" +  response.revision.toString())
         } catch (e: Exception) {
             Log.d("ayash", "response4 ${e.message}")
             val cache = database.todoItemDao().getTodoItems().toTodoItemList().reversed()
+            Log.d("ayash", "cache ${cache}")
             emit(cache)
         }
     }

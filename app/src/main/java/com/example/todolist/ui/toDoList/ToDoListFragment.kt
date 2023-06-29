@@ -17,8 +17,11 @@ import com.example.todolist.databinding.FragmentToDoListBinding
 import com.example.todolist.ui.toDoList.model.TodoListState
 import com.example.todolist.ui.toDoList.recyclerView.ToDoListAdapter
 import com.example.todolist.ui.toDoList.recyclerView.TouchHelperCallback
+import com.example.todolist.util.NetworkStateReceiver
 import com.example.todolist.util.repeatOnCreated
+import com.google.android.material.appbar.AppBarLayout
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.math.abs
 
 @AndroidEntryPoint
 class ToDoListFragment : Fragment() {
@@ -29,6 +32,8 @@ class ToDoListFragment : Fragment() {
     private val viewModel: ToDoListViewModel by viewModels()
 
     private lateinit var recyclerView: RecyclerView
+
+    private lateinit var networkStateReceiver: NetworkStateReceiver
 
     private val adapter by lazy {
         ToDoListAdapter(
@@ -48,11 +53,15 @@ class ToDoListFragment : Fragment() {
         return binding.root
     }
 
+    override fun onStart() {
+        super.onStart()
+        networkStateReceiver.register()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        viewModel.loadTodoItems()
-
+        setupRefreshLayoutEnabledState()
         initRecyclerView()
         subscribeOnViewModel()
 
@@ -65,6 +74,15 @@ class ToDoListFragment : Fragment() {
         binding.addItem.setOnClickListener {
             val action = ToDoListFragmentDirections.actionToDoListFragmentToToDoFragment()
             this.findNavController().navigate(action)
+        }
+
+        binding.refreshLayout.setOnRefreshListener {
+            viewModel.loadTodoItems()
+            binding.refreshLayout.isRefreshing = false
+        }
+
+        networkStateReceiver = NetworkStateReceiver(requireContext()) {
+            viewModel.loadTodoItems()
         }
     }
 
@@ -94,6 +112,12 @@ class ToDoListFragment : Fragment() {
         }
     }
 
+    private fun setupRefreshLayoutEnabledState() {
+        binding.appBarLayout.addOnOffsetChangedListener{ _, verticalOffset ->
+            binding.refreshLayout.isEnabled = verticalOffset == 0
+        }
+    }
+
     private fun initRecyclerView() {
         recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -102,6 +126,12 @@ class ToDoListFragment : Fragment() {
         val itemTouchHelperCallback = TouchHelperCallback(adapter)
         val touchHelper = ItemTouchHelper(itemTouchHelperCallback)
         touchHelper.attachToRecyclerView(recyclerView)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding.refreshLayout.isRefreshing = false
+        networkStateReceiver.unregister()
     }
 
     override fun onDestroy() {

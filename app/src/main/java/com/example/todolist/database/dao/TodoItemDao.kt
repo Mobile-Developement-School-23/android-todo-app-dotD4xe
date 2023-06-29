@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.example.todolist.database.entity.TodoItemEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -18,6 +19,9 @@ interface TodoItemDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTodoItem(todoItem: TodoItemEntity)
+
+    @Update
+    suspend fun updateTodoItem(todoItem: TodoItemEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTodoItems(todoItems: List<TodoItemEntity>)

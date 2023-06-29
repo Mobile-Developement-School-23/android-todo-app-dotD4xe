@@ -73,6 +73,7 @@ class ToDoListViewHolder(
 
         binding.checkBox.setOnCheckedChangeListener { _, _ ->
             onItemChangeListener?.invoke(toDo)
+            Log.d("ayash", "WWWTTTFFF " + toDo.toString())
             Log.d("ayash", "from holder " + toDo.toString())
         }
     }

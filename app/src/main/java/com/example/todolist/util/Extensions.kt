@@ -9,6 +9,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -21,8 +22,8 @@ fun View.hide(){
     visibility = View.GONE
 }
 
-fun Fragment.toast(msg: String?){
-    Toast.makeText(requireContext(),msg, Toast.LENGTH_LONG).show()
+fun Fragment.showSnackbar(message: String, duration: Int = Snackbar.LENGTH_LONG) {
+    view?.let { Snackbar.make(it, message, duration).show() }
 }
 
 fun View.show(){
@@ -39,12 +40,10 @@ fun Date.toText(): String {
     return format.format(this)
 }
 
-// Extension функция для преобразования Unix timestamp в объект Date
 fun Long.toDateFromUnixTimestamp(): Date {
     return Date(this * 1000)
 }
 
-// Extension функция для преобразования объекта Date в Unix timestamp
 fun Date.toUnixTimestamp(): Long {
     return this.time / 1000
 }

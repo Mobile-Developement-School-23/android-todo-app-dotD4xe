@@ -20,14 +20,6 @@ import dagger.hilt.components.SingletonComponent
 @Module
 object RepositoryModule {
 
-    private val Context.dataStore by preferencesDataStore(name = "my_data_store")
-
-    @Provides
-    @Singleton
-    fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
-        return context.dataStore
-    }
-
     @Provides
     @Singleton
     fun provideNoteRepository(

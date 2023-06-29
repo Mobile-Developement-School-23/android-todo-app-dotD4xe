@@ -17,14 +17,7 @@ class DataStoreManager(private val dataStore: DataStore<Preferences>) {
         return dataStore.data
             .map { preferences ->
                 preferences[revisionKey] ?: 0
-            }
-            .catch { exception ->
-                // Обработка ошибок чтения
-            }
-            .onStart {
-                // Действия, выполняющиеся перед чтением из DataStore
-            }
-            .first()
+            }.first()
     }
 
     suspend fun writeRevision(revision: Int) {
