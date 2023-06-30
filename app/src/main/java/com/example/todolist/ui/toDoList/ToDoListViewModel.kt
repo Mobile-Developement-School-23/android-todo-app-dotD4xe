@@ -31,49 +31,25 @@ class ToDoListViewModel @Inject constructor(
                 _todoItems.update { previousState ->
                     val shouldShowCompleted = previousState.isDone
 
-                    val filteredItems = items.filter {
+                    val filteredItems = items.listItems.filter { item ->
                         if (shouldShowCompleted) {
                             true
                         } else {
-                            it.isDone.not()
+                            item.isDone.not()
                         }
                     }
 
-                    val completedCount = items.count { it.isDone }
+                    val completedCount = items.listItems.count { it.isDone }
 
                     TodoListState(
                         listItems = filteredItems,
                         completed = completedCount,
-                        isDone = previousState.isDone
+                        isDone = previousState.isDone,
+                        error = items.error
                     )
                 }
             }
-            Log.d("ayash", "loadTodoItems ${todoItems.value.listItems}")
         }
-//        viewModelScope.launch {
-//            _todoItems.update { previousState ->
-//                val completedCount: Int
-//                val shouldShowCompleted = previousState.isCompletedShowed
-//
-//                val items = repository.getItems()
-//                    .value
-//                    .map { it.value }
-//                    .also { completedCount = it.filter { it.isCompleted }.size }
-//                    .filter {
-//                        if (shouldShowCompleted) {
-//                            true
-//                        } else {
-//                            it.isCompleted.not()
-//                        }
-//                    }
-//
-//                TodoListState(
-//                    listItems = items,
-//                    completed = completedCount,
-//                    isDone = previousState.isCompletedShowed
-//                )
-//            }
-//        }
     }
 
     fun checkTodoItem(todoItem: TodoItem) {
@@ -82,8 +58,6 @@ class ToDoListViewModel @Inject constructor(
             repository.saveItem(checkedItem)
             loadTodoItems()
         }
-        Log.d("ayash"," item checked" +checkedItem.toString())
-
     }
 
     fun changeCompletedTodosVisibility() {
@@ -92,10 +66,10 @@ class ToDoListViewModel @Inject constructor(
             TodoListState(
                 listItems = it.listItems,
                 completed = it.completed,
-                isDone = it.isDone.not()
+                isDone = it.isDone.not(),
+                error = ""
             )
         }
-        Log.d("ayash", "clock see ${_todoItems.value.listItems}")
         loadTodoItems()
     }
 

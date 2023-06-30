@@ -9,7 +9,7 @@ import com.example.todolist.databinding.ToDoItemBinding
 
 
 class ToDoListAdapter(
-    private val onItemClicked: (Int, TodoItem) -> Unit // вынести в бади
+    private val onItemClicked: (Int, TodoItem) -> Unit
 ) : ListAdapter<TodoItem, ToDoListViewHolder>(DiffCallback), TouchHelperCallback.TouchHelperAdapter {
 
     private var onItemChangeListener: ((TodoItem) -> Unit)? = null

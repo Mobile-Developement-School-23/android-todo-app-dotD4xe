@@ -11,5 +11,7 @@ interface ToDoRepository {
     suspend fun addItem(item: TodoItem)
     suspend fun deleteItem(item: TodoItem)
     suspend fun saveItem(item: TodoItem)
-    suspend fun getItems(): Flow<List<TodoItem>>
+    suspend fun getItems(): StateFlow<model>
+
+    suspend fun updateTodoList()
 }

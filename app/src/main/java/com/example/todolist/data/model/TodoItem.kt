@@ -2,6 +2,7 @@ package com.example.todolist.data.model
 
 import android.os.Parcelable
 import com.example.todolist.database.entity.TodoItemEntity
+import com.example.todolist.network.model.ToDoItemDto
 import com.example.todolist.util.Importance
 import com.example.todolist.util.toDateFromUnixTimestamp
 import com.example.todolist.util.toUnixTimestamp
@@ -32,6 +33,22 @@ fun TodoItemEntity.toTodoItem(): TodoItem {
         dateOfChange = changed_at.toDateFromUnixTimestamp(),
         lastUpdatedBy = last_updated_by
     )
+}
+
+fun List<TodoItem>.toDtoList(): List<ToDoItemDto> {
+    return map { todoItem ->
+        ToDoItemDto(
+            id = todoItem.id,
+            text = todoItem.content,
+            importance = todoItem.importance.toString(),
+            deadline = todoItem.deadline?.toUnixTimestamp(),
+            done = todoItem.isDone,
+            color = todoItem.color,
+            created_at = todoItem.dateOfCreation.toUnixTimestamp(),
+            changed_at = todoItem.dateOfChange.toUnixTimestamp(),
+            last_updated_by = todoItem.lastUpdatedBy
+        )
+    }
 }
 
 fun TodoItem.toEntity(): TodoItemEntity {

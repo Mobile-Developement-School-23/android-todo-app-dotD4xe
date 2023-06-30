@@ -20,25 +20,20 @@ class ToDoViewModel @Inject constructor(
     private val repository: ToDoRepository
 ) : ViewModel() {
 
-    private val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-        // Handle the exception here
-        Log.e("ayash", "Coroutine exception: ${exception.message}")
-    }
-
     fun addItem(item: TodoItem) {
-        CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             repository.addItem(item)
         }
     }
 
     fun saveItem(item: TodoItem) {
-        CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             repository.saveItem(item)
         }
     }
 
     fun deleteItem(item: TodoItem) {
-        CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             repository.deleteItem(item)
         }
     }

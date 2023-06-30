@@ -1,19 +1,16 @@
-package com.example.todolist.ui.toDoList.model
+package com.example.todolist.data.repository
+
 import com.example.todolist.data.model.TodoItem
 
-data class TodoListState(
+data class model(
     val listItems: List<TodoItem>,
-    val completed: Int,
-    val isDone: Boolean,
     val error: String
 ) {
 
     companion object {
 
-        val empty = TodoListState(
+        val empty = model(
             listItems = emptyList(),
-            completed = 0,
-            isDone = false,
             error = ""
         )
     }
