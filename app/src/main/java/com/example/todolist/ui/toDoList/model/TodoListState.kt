@@ -9,7 +9,6 @@ data class TodoListState(
 ) {
 
     companion object {
-
         val empty = TodoListState(
             listItems = emptyList(),
             completed = 0,

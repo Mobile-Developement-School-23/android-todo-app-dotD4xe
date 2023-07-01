@@ -7,7 +7,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.todolist.database.entity.TodoItemEntity
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TodoItemDao {

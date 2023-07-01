@@ -15,7 +15,6 @@ class ToDoListAdapter(
     private var onItemChangeListener: ((TodoItem) -> Unit)? = null
     private var onItemDeleteListener: ((TodoItem) -> Unit)? = null
 
-    /* Callback функция для обновления выполненных дел в ToDoListFragment */
     fun setOnChangeItemListener(listener: (TodoItem) -> Unit) { onItemChangeListener = listener }
 
     fun setOnDeleteItemListener(listener: (TodoItem) -> Unit) {onItemDeleteListener = listener}

@@ -73,6 +73,4 @@ class ToDoListViewHolder(
 
         binding.checkBox.setOnClickListener { onItemChangeListener?.invoke(toDo) }
     }
-
-
 }

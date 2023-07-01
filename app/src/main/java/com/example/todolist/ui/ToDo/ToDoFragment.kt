@@ -2,25 +2,20 @@ package com.example.todolist.ui.ToDo
 
 import android.content.Context
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.navOptions
 import com.example.todolist.R
 import com.example.todolist.data.model.TodoItem
 import com.example.todolist.databinding.FragmentToDoBinding
@@ -30,13 +25,9 @@ import com.example.todolist.util.getParcelableCompat
 import com.example.todolist.util.showSnackbar
 import com.example.todolist.util.toDate
 import com.example.todolist.util.toText
-import com.google.android.material.datepicker.CalendarConstraints
-import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.ZoneOffset
 import java.util.Calendar
 import java.util.Locale
 import java.util.UUID
@@ -66,54 +57,12 @@ class ToDoFragment : Fragment() {
         objTodo = arguments?.getParcelableCompat("Todo")
 
         /* если добавляем дело */
-        if (objTodo == null) {
-            binding.delete.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorText))
-            binding.delete.alpha = 0.20F
-            binding.labelDelete.setColorFilter(ContextCompat.getColor(requireContext(), R.color.colorText))
-            binding.labelDelete.alpha = 0.20F
-            binding.save.setOnClickListener {
-                if (binding.content.text.isBlank()) showSnackbar("Введите задачу")
-                else {
-                    viewModel.addItem(saveItem(null))
-                    findNavController().popBackStack()
-                }
-            }
-        }
-        /* если редактируем дело */
-        else {
-            objTodo?.let { item ->
-                binding.content.setText(item.content)
-                if (item.deadline != null) {
-                    binding.deadline.text = item.deadline.toText()
-                    binding.datePicker.isChecked = true
-                }
-                binding.textImportance.text = when (item.importance) {
-                    Importance.LOW -> "Низкий"
-                    Importance.BASIC -> "Нет"
-                    else -> {
-                        "!! Высокий"
-                    }
-                }
-                if (binding.textImportance.text == "!! Высокий") binding.textImportance.setTextColor(
-                    ContextCompat.getColor(requireContext(), R.color.red)
-                )
-                binding.save.setOnClickListener {
-                    if (binding.content.text.isBlank()) showSnackbar("Введите задачу")
-                    else {
-                        Log.d("ayash", "save item")
-                        viewModel.saveItem(saveItem(item))
-                        findNavController().popBackStack()
-                    }
-                }
-            }
-        }
+        if (objTodo == null) { addItemBind() }
 
-        binding.deleteButton.setOnClickListener {
-            if (objTodo != null){
-                viewModel.deleteItem(objTodo!!)
-                findNavController().navigateUp()
-            }
-        }
+        /* если редактируем дело */
+        else { redactorItemBind() }
+
+        binding.deleteButton.setOnClickListener { clickDeleteButton() }
 
         binding.toolbar.setNavigationOnClickListener { findNavController().navigateUp() }
 
@@ -121,8 +70,56 @@ class ToDoFragment : Fragment() {
 
         binding.importance.setOnClickListener { showPopup(binding.importance) }
     }
+
+    private fun clickDeleteButton() {
+        if (objTodo != null){
+            viewModel.deleteItem(objTodo!!)
+            findNavController().navigateUp()
+        }
+    }
+
+    private fun addItemBind() {
+        binding.delete.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorText))
+        binding.delete.alpha = 0.20F
+        binding.labelDelete.setColorFilter(ContextCompat.getColor(requireContext(), R.color.colorText))
+        binding.labelDelete.alpha = 0.20F
+        binding.save.setOnClickListener {
+            if (binding.content.text.isBlank()) showSnackbar("Введите задачу")
+            else {
+                viewModel.addItem(saveItem(null))
+                findNavController().popBackStack()
+            }
+        }
+    }
+
+    private fun redactorItemBind() {
+        objTodo?.let { item ->
+            binding.content.setText(item.content)
+            if (item.deadline != null) {
+                binding.deadline.text = item.deadline.toText()
+                binding.datePicker.isChecked = true
+            }
+            binding.textImportance.text = when (item.importance) {
+                Importance.LOW -> "Низкий"
+                Importance.BASIC -> "Нет"
+                else -> {
+                    "!! Высокий"
+                }
+            }
+            if (binding.textImportance.text == "!! Высокий") binding.textImportance.setTextColor(
+                ContextCompat.getColor(requireContext(), R.color.red)
+            )
+            binding.save.setOnClickListener {
+                if (binding.content.text.isBlank()) showSnackbar("Введите задачу")
+                else {
+                    viewModel.saveItem(saveItem(item))
+                    findNavController().popBackStack()
+                }
+            }
+        }
+    }
     private fun saveItem(item: TodoItem?): TodoItem {
-        val calendar: Calendar = Calendar.getInstance()
+        val calendar = Calendar.getInstance()
 
         val id = item?.id ?: UUID.randomUUID().toString()
         val content = binding.content.text.toString().trim()
@@ -139,7 +136,6 @@ class ToDoFragment : Fragment() {
 
         return TodoItem(id, content, importance, deadline?.toDate(), null, isDone, dateOfCreation, dateOfChange, lastUpdateBy)
     }
-    //совместить 2 метода которые внизу
 
     private fun showCalendar(isChecked: Boolean) {
         if (isChecked) {

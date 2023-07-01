@@ -1,7 +1,6 @@
 package com.example.todolist.ui.toDoList
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todolist.R
-import com.example.todolist.data.model.TodoItem
 import com.example.todolist.databinding.FragmentToDoListBinding
 import com.example.todolist.ui.toDoList.model.TodoListState
 import com.example.todolist.ui.toDoList.recyclerView.ToDoListAdapter
@@ -20,10 +18,7 @@ import com.example.todolist.ui.toDoList.recyclerView.TouchHelperCallback
 import com.example.todolist.util.NetworkStateReceiver
 import com.example.todolist.util.repeatOnCreated
 import com.example.todolist.util.showSnackbar
-import com.google.android.material.appbar.AppBarLayout
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
-import kotlin.math.abs
 
 @AndroidEntryPoint
 class ToDoListFragment : Fragment() {
@@ -36,9 +31,6 @@ class ToDoListFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
 
     private lateinit var networkStateReceiver: NetworkStateReceiver
-
-//    @Inject
-//    lateinit var workerScheduler: WorkerScheduler
 
     private val adapter by lazy {
         ToDoListAdapter(
@@ -69,7 +61,6 @@ class ToDoListFragment : Fragment() {
         setupRefreshLayoutEnabledState()
         initRecyclerView()
         subscribeOnViewModel()
-//        workerScheduler.schedulePeriodicWork(requireContext())
 
         adapter.setOnChangeItemListener { viewModel.checkTodoItem(it) }
 
@@ -89,7 +80,7 @@ class ToDoListFragment : Fragment() {
         }
 
         networkStateReceiver = NetworkStateReceiver(requireContext()) {
-            viewModel.loadTodoItems()
+            viewModel.syncData()
         }
     }
 
@@ -102,12 +93,7 @@ class ToDoListFragment : Fragment() {
     private fun showContent(items: TodoListState) {
         if (items.error.isNotBlank()) showSnackbar(items.error)
         eyeVisibility(items)
-        populateTodoList(items.listItems)
-    }
-
-    private fun populateTodoList(items: List<TodoItem>) {
-        adapter.submitList(items)
-        Log.d("ayash", "DDDDD"+items)
+        adapter.submitList(items.listItems)
     }
 
     private fun eyeVisibility(items: TodoListState) {
@@ -134,17 +120,6 @@ class ToDoListFragment : Fragment() {
         val itemTouchHelperCallback = TouchHelperCallback(adapter)
         val touchHelper = ItemTouchHelper(itemTouchHelperCallback)
         touchHelper.attachToRecyclerView(recyclerView)
-    }
-
-    private fun createAdapter(): ToDoListAdapter {
-        return ToDoListAdapter(
-            onItemClicked = { _, item ->
-                findNavController().navigate(R.id.toDoFragment,Bundle().apply {
-                    putParcelable("Todo",item)
-                })
-            }
-
-        )
     }
 
     override fun onPause() {

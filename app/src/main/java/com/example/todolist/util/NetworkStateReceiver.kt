@@ -7,7 +7,7 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 
 class NetworkStateReceiver(
-    private val context: Context,
+    context: Context,
     private val onNetworkAvailable: () -> Unit
 ) {
 

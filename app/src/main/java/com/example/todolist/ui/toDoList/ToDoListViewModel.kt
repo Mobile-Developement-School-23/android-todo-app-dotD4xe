@@ -1,6 +1,5 @@
 package com.example.todolist.ui.toDoList
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.todolist.data.model.TodoItem
@@ -11,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
@@ -53,7 +53,11 @@ class ToDoListViewModel @Inject constructor(
     }
 
     fun checkTodoItem(todoItem: TodoItem) {
-        val checkedItem = todoItem.copy(isDone = todoItem.isDone.not())
+        val calendar: Calendar = Calendar.getInstance()
+        val checkedItem = todoItem.copy(
+            isDone = todoItem.isDone.not(),
+            dateOfChange = calendar.time
+        )
         viewModelScope.launch {
             repository.saveItem(checkedItem)
             loadTodoItems()
@@ -61,7 +65,6 @@ class ToDoListViewModel @Inject constructor(
     }
 
     fun changeCompletedTodosVisibility() {
-        Log.d("ayash", "clock see1 ${_todoItems.value.listItems}")
         _todoItems.update {
             TodoListState(
                 listItems = it.listItems,
@@ -71,6 +74,13 @@ class ToDoListViewModel @Inject constructor(
             )
         }
         loadTodoItems()
+    }
+
+    fun syncData() {
+        viewModelScope.launch {
+            repository.syncData()
+            loadTodoItems()
+        }
     }
 
     fun deleteItem(item: TodoItem) {
