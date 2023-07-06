@@ -1,5 +1,6 @@
 package com.example.todolist.ui.toDoList
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.todolist.data.model.TodoItem
@@ -27,6 +28,7 @@ class ToDoListViewModel @Inject constructor(
 
     fun loadTodoItems() {
         viewModelScope.launch {
+            Log.d("ayash", "lol")
             repository.getItems().collect { items ->
                 _todoItems.update { previousState ->
                     val shouldShowCompleted = previousState.isDone

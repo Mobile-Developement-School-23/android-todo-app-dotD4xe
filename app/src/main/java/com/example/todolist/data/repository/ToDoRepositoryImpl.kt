@@ -1,5 +1,6 @@
 package com.example.todolist.data.repository
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.example.todolist.data.model.TodoItem
@@ -49,32 +50,35 @@ class ToDoRepositoryImpl(
 
 
     override suspend fun addItem(item: TodoItem) {
-        val revision = dataStoreManager.readRevision()
         try {
+            getItems()
+            val revision = dataStoreManager.readRevision()
             database.todoItemDao().insertTodoItem(item.toEntity())
             val response =
                 todoApiService.addTodoItem(revision, AddTodoRequest(item.toToDoItemDto()))
             dataStoreManager.writeRevision(response.revision)
         } catch (e: Exception) {
             if (e is HttpException) {
-                when(e.code()) {
-                    400 -> {
-                        getItems()
-                        addItem(item)
-                    }
-                }
+//                when(e.code()) {
+//                    400 -> {
+//                        getItems()
+//                        Log.d("ayash", "add item")
+//                        addItem(item)
+//                    }
+//                }
             } else {
-                CoroutineScope(Dispatchers.IO).launch {
-                    RetryHandler().retryFunction { todoApiService.addTodoItem(revision, AddTodoRequest(item.toToDoItemDto())) }
-                }
+//                CoroutineScope(Dispatchers.IO).launch {
+//                    RetryHandler().retryFunction { todoApiService.addTodoItem(revision, AddTodoRequest(item.toToDoItemDto())) }
+//                }
             }
             getItems()
         }
     }
 
     override suspend fun saveItem(item: TodoItem) {
-        val revision = dataStoreManager.readRevision()
         try {
+            getItems()
+            val revision = dataStoreManager.readRevision()
             database.todoItemDao().updateTodoItem(item.toEntity())
             val response = todoApiService.updateTodoItem(
                 item.id,
@@ -83,39 +87,42 @@ class ToDoRepositoryImpl(
             )
             dataStoreManager.writeRevision(response.revision)
         } catch (e: Exception) {
-            if (e is HttpException) {
-                when(e.code()) {
-                    400 -> {
-                        getItems()
-                        saveItem(item)
-                    }
-                }
-            } else {
-                CoroutineScope(Dispatchers.IO).launch {
-                    RetryHandler().retryFunction {
-                        todoApiService.updateTodoItem(
-                            item.id,
-                            revision,
-                            AddTodoRequest(item.toToDoItemDto())
-                        )
-                    }
-                }
-            }
+//            if (e is HttpException) {
+//                when(e.code()) {
+//                    400 -> {
+//                        getItems()
+//                        Log.d("ayash", "save item")
+//                        saveItem(item)
+//                    }
+//                }
+//            } else {
+//                CoroutineScope(Dispatchers.IO).launch {
+//                    RetryHandler().retryFunction {
+//                        todoApiService.updateTodoItem(
+//                            item.id,
+//                            revision,
+//                            AddTodoRequest(item.toToDoItemDto())
+//                        )
+//                    }
+//                }
+//            }
             getItems()
         }
     }
 
     override suspend fun deleteItem(item: TodoItem) {
-        val revision = dataStoreManager.readRevision()
         try {
+            getItems()
+            val revision = dataStoreManager.readRevision()
             database.todoItemDao().deleteTodoItem(item.toEntity())
             val response = todoApiService.deleteTodoItem(item.id, revision)
             dataStoreManager.writeRevision(response.revision)
         } catch (e: Exception) {
-            getItems()
-            CoroutineScope(Dispatchers.IO).launch {
-                RetryHandler().retryFunction { todoApiService.deleteTodoItem(item.id, revision) }
-            }
+//            getItems()
+//            Log.d("ayash", "add item")
+//            CoroutineScope(Dispatchers.IO).launch {
+//                RetryHandler().retryFunction { todoApiService.deleteTodoItem(item.id, revision) }
+//            }
         }
     }
 
@@ -129,11 +136,13 @@ class ToDoRepositoryImpl(
                         ""
                     )
                 }
-                database.todoItemDao().insertTodoItems(list.toTodoItemEntityList())
+                Log.d("ayash", "get 1 ${todoItems.value.listItems}")
+                database.todoItemDao().replaceTodoItems(list.toTodoItemEntityList())
             }
             dataStoreManager.writeRevision(response.revision)
         } catch (e: UnknownHostException) {
             val cache = database.todoItemDao().getTodoItems().toTodoItemList().reversed()
+            Log.d("ayash", " error get")
             todoItems.getAndUpdate {
                 RepositoryState(
                     listItems = cache,
@@ -142,6 +151,7 @@ class ToDoRepositoryImpl(
             }
         } catch (e: Exception) {
             val cache = database.todoItemDao().getTodoItems().toTodoItemList().reversed()
+            Log.d("ayash", " error get2")
             todoItems.getAndUpdate {
                 RepositoryState(
                     listItems = cache,
@@ -149,6 +159,7 @@ class ToDoRepositoryImpl(
                 )
             }
         }
+        Log.d("ayash", "get 2 ${todoItems.value.listItems.toString()}")
         return todoItems
     }
 }

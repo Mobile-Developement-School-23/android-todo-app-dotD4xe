@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import com.example.todolist.database.entity.TodoItemEntity
 
@@ -25,4 +26,13 @@ interface TodoItemDao {
     suspend fun insertTodoItems(todoItems: List<TodoItemEntity>)
 
     @Delete suspend fun deleteTodoItem(todoItem: TodoItemEntity)
+
+    @Query("DELETE FROM todo_items")
+    suspend fun deleteAllTodoItems()
+
+    @Transaction
+    suspend fun replaceTodoItems(todoItems: List<TodoItemEntity>) {
+        deleteAllTodoItems()
+        insertTodoItems(todoItems)
+    }
 }
