@@ -1,31 +1,34 @@
 package com.example.todolist.data.repository
 
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import com.example.todolist.data.model.TodoItem
-import com.example.todolist.data.model.toDtoList
-import com.example.todolist.data.model.toEntity
-import com.example.todolist.data.model.toToDoItemDto
-import com.example.todolist.database.AppDatabase
-import com.example.todolist.database.entity.toTodoItemList
-import com.example.todolist.network.api.TodoApiService
-import com.example.todolist.network.model.AddTodoRequest
-import com.example.todolist.network.model.AddTodoRequestList
-import com.example.todolist.network.model.toTodoItemEntityList
-import com.example.todolist.network.model.toTodoItemList
-import com.example.todolist.util.DataStoreManager
-import com.example.todolist.util.RetryHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.example.todolist.domain.entity.TodoItem
+import com.example.todolist.domain.entity.toDtoList
+import com.example.todolist.domain.entity.toEntity
+import com.example.todolist.domain.entity.toToDoItemDto
+import com.example.todolist.data.database.AppDatabase
+import com.example.todolist.data.database.entity.toTodoItemList
+import com.example.todolist.data.network.api.TodoApiService
+import com.example.todolist.data.network.model.AddTodoRequest
+import com.example.todolist.data.network.model.AddTodoRequestList
+import com.example.todolist.data.network.model.toTodoItemEntityList
+import com.example.todolist.data.network.model.toTodoItemList
+import com.example.todolist.domain.repository.ToDoRepository
+import com.example.todolist.presentation.util.DataStoreManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.getAndUpdate
-import kotlinx.coroutines.launch
-import retrofit2.HttpException
-import java.net.UnknownHostException
+import javax.inject.Inject
 
-class ToDoRepositoryImpl(
+/**
+ * The repository is part of the data layer.
+ * It contains the logic of retrieving and updating ToDo.
+ * Scope of application: lives as long as the application itself. Not recreated during setup
+ * @property todoApiService [TodoApiService]
+ * @property database [AppDatabase]
+ */
+
+class ToDoRepositoryImpl @Inject constructor(
     dataStore: DataStore<Preferences>,
     private val todoApiService: TodoApiService,
     private val database: AppDatabase
@@ -43,7 +46,7 @@ class ToDoRepositoryImpl(
                 AddTodoRequestList(dbItemList.toDtoList())
             )
             dataStoreManager.writeRevision(response.revision)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             getItems()
         }
     }
@@ -57,20 +60,8 @@ class ToDoRepositoryImpl(
             val response =
                 todoApiService.addTodoItem(revision, AddTodoRequest(item.toToDoItemDto()))
             dataStoreManager.writeRevision(response.revision)
-        } catch (e: Exception) {
-            if (e is HttpException) {
-//                when(e.code()) {
-//                    400 -> {
-//                        getItems()
-//                        Log.d("ayash", "add item")
-//                        addItem(item)
-//                    }
-//                }
-            } else {
-//                CoroutineScope(Dispatchers.IO).launch {
-//                    RetryHandler().retryFunction { todoApiService.addTodoItem(revision, AddTodoRequest(item.toToDoItemDto())) }
-//                }
-            }
+            getItems()
+        } catch (_: Exception) {
             getItems()
         }
     }
@@ -86,26 +77,8 @@ class ToDoRepositoryImpl(
                 AddTodoRequest(item.toToDoItemDto())
             )
             dataStoreManager.writeRevision(response.revision)
-        } catch (e: Exception) {
-//            if (e is HttpException) {
-//                when(e.code()) {
-//                    400 -> {
-//                        getItems()
-//                        Log.d("ayash", "save item")
-//                        saveItem(item)
-//                    }
-//                }
-//            } else {
-//                CoroutineScope(Dispatchers.IO).launch {
-//                    RetryHandler().retryFunction {
-//                        todoApiService.updateTodoItem(
-//                            item.id,
-//                            revision,
-//                            AddTodoRequest(item.toToDoItemDto())
-//                        )
-//                    }
-//                }
-//            }
+            getItems()
+        } catch (_: Exception) {
             getItems()
         }
     }
@@ -117,12 +90,9 @@ class ToDoRepositoryImpl(
             database.todoItemDao().deleteTodoItem(item.toEntity())
             val response = todoApiService.deleteTodoItem(item.id, revision)
             dataStoreManager.writeRevision(response.revision)
-        } catch (e: Exception) {
-//            getItems()
-//            Log.d("ayash", "add item")
-//            CoroutineScope(Dispatchers.IO).launch {
-//                RetryHandler().retryFunction { todoApiService.deleteTodoItem(item.id, revision) }
-//            }
+            getItems()
+        } catch (_: Exception) {
+            getItems()
         }
     }
 
@@ -136,30 +106,18 @@ class ToDoRepositoryImpl(
                         ""
                     )
                 }
-                Log.d("ayash", "get 1 ${todoItems.value.listItems}")
                 database.todoItemDao().replaceTodoItems(list.toTodoItemEntityList())
             }
             dataStoreManager.writeRevision(response.revision)
-        } catch (e: UnknownHostException) {
+        } catch (_: Exception) {
             val cache = database.todoItemDao().getTodoItems().toTodoItemList().reversed()
-            Log.d("ayash", " error get")
             todoItems.getAndUpdate {
                 RepositoryState(
                     listItems = cache,
                     "No connectoin"
                 )
             }
-        } catch (e: Exception) {
-            val cache = database.todoItemDao().getTodoItems().toTodoItemList().reversed()
-            Log.d("ayash", " error get2")
-            todoItems.getAndUpdate {
-                RepositoryState(
-                    listItems = cache,
-                    e.toString()
-                )
-            }
         }
-        Log.d("ayash", "get 2 ${todoItems.value.listItems.toString()}")
         return todoItems
     }
 }
