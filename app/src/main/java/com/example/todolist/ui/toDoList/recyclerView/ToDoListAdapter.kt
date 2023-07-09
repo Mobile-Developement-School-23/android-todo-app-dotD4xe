@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.example.todolist.data.model.TodoItem
-import com.example.todolist.data.repository.ToDoRepository.Companion.todoItems
 import com.example.todolist.databinding.ToDoItemBinding
 
 
@@ -13,12 +12,12 @@ class ToDoListAdapter(
     private val onItemClicked: (Int, TodoItem) -> Unit
 ) : ListAdapter<TodoItem, ToDoListViewHolder>(DiffCallback), TouchHelperCallback.TouchHelperAdapter {
 
-    private var onItemChangeListener: (() -> Unit)? = null
+    private var onItemChangeListener: ((TodoItem) -> Unit)? = null
+    private var onItemDeleteListener: ((TodoItem) -> Unit)? = null
 
-    /* Callback функция для обновления выполненных дел в ToDoListFragment */
-    fun setOnChangeItemListener(listener: () -> Unit) {
-        onItemChangeListener = listener
-    }
+    fun setOnChangeItemListener(listener: (TodoItem) -> Unit) { onItemChangeListener = listener }
+
+    fun setOnDeleteItemListener(listener: (TodoItem) -> Unit) {onItemDeleteListener = listener}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ToDoListViewHolder {
         return ToDoListViewHolder(
@@ -36,15 +35,7 @@ class ToDoListAdapter(
         holder.bind(getItem(position))
     }
 
-    private fun deleteItem(position: Int) {
-        val newList = currentList.toMutableList()
-        todoItems.removeIf { newList[position].id == it.id }
-        newList.removeAt(position)
-        onItemChangeListener?.invoke()
-        submitList(newList)
-    }
-
-    override fun onItemDismiss(position: Int) = deleteItem(position)
+    override fun onItemDismiss(position: Int) { onItemDeleteListener?.invoke(getItem(position)) }
 
     companion object {
         private val DiffCallback = object : DiffUtil.ItemCallback<TodoItem>() {

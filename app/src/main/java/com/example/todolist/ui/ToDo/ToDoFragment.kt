@@ -14,26 +14,31 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.todolist.R
 import com.example.todolist.data.model.TodoItem
-import com.example.todolist.data.repository.ToDoRepository
-import com.example.todolist.data.repository.ToDoRepository.Companion.itemId
 import com.example.todolist.databinding.FragmentToDoBinding
 import com.example.todolist.util.Importance
+import com.example.todolist.util.buildCalendarConstraints
+import com.example.todolist.util.getParcelableCompat
+import com.example.todolist.util.showSnackbar
 import com.example.todolist.util.toDate
 import com.example.todolist.util.toText
-import com.example.todolist.util.toast
 import com.google.android.material.datepicker.MaterialDatePicker
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import java.util.UUID
 
-
+@AndroidEntryPoint
 class ToDoFragment : Fragment() {
 
     private var _binding: FragmentToDoBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel: ToDoViewModel by viewModels()
 
     private var objTodo: TodoItem? = null
 
@@ -49,57 +54,15 @@ class ToDoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //deprecated но работает прекрасно
-        objTodo = arguments?.getParcelable("Todo")
+        objTodo = arguments?.getParcelableCompat("Todo")
 
         /* если добавляем дело */
-        if (objTodo == null) {
-            binding.delete.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorText))
-            binding.delete.alpha = 0.20F
-            binding.labelDelete.setColorFilter(ContextCompat.getColor(requireContext(), R.color.colorText))
-            binding.labelDelete.alpha = 0.20F
-            binding.save.setOnClickListener {
-                if (binding.content.text.isBlank()) toast("введите задачу")
-                else {
-                    ToDoRepository().addItem(addNewItem())
-                    findNavController().navigateUp()
-                }
-            }
-        }
-        /* если редактируем дело */
-        else {
-            objTodo?.let { item ->
-                binding.content.setText(item.content)
-                if (item.deadline != null) {
-                    binding.deadline.text = item.deadline.toText()
-                    binding.datePicker.isChecked = true
-                }
-                binding.textImportance.text = when (item.importance) {
-                    Importance.LOW -> "Низкий"
-                    Importance.NORMAL -> "Нет"
-                    else -> {
-                        "!! Высокий"
-                    }
-                }
-                if (binding.textImportance.text == "!! Высокий") binding.textImportance.setTextColor(
-                    ContextCompat.getColor(requireContext(), R.color.red)
-                )
-                binding.save.setOnClickListener {
-                    if (binding.content.text.isBlank()) toast("введите задачу")
-                    else {
-                        ToDoRepository().saveItem(saveItem(item))
-                        findNavController().navigateUp()
-                    }
-                }
-            }
-        }
+        if (objTodo == null) { addItemBind() }
 
-        binding.deleteButton.setOnClickListener {
-            if (objTodo != null){
-                ToDoRepository().deleteItem(objTodo!!)
-                findNavController().navigateUp()
-            }
-        }
+        /* если редактируем дело */
+        else { redactorItemBind() }
+
+        binding.deleteButton.setOnClickListener { clickDeleteButton() }
 
         binding.toolbar.setNavigationOnClickListener { findNavController().navigateUp() }
 
@@ -108,39 +71,70 @@ class ToDoFragment : Fragment() {
         binding.importance.setOnClickListener { showPopup(binding.importance) }
     }
 
-    private fun addNewItem(): TodoItem {
-        val calendar: Calendar = Calendar.getInstance()
-
-        val id = itemId.toString()
-        val content = binding.content.text.toString().trim()
-        val importance = when(binding.textImportance.text) {
-            "Низкий" -> Importance.LOW
-            "Нет" -> Importance.NORMAL
-            else -> Importance.HIGH
+    private fun clickDeleteButton() {
+        if (objTodo != null){
+            viewModel.deleteItem(objTodo!!)
+            findNavController().navigateUp()
         }
-        val deadline = binding.deadline.text.toString().ifBlank { null }
-        val isDone = false
-        val dateOfCreation = calendar.time
-        val dateOfChange = null
-        itemId += 1
-        return TodoItem(id,content, importance, deadline.toDate(), isDone, dateOfCreation, dateOfChange)
     }
 
-    private fun saveItem(item: TodoItem): TodoItem {
-        val calendar: Calendar = Calendar.getInstance()
+    private fun addItemBind() {
+        binding.delete.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorText))
+        binding.delete.alpha = 0.20F
+        binding.labelDelete.setColorFilter(ContextCompat.getColor(requireContext(), R.color.colorText))
+        binding.labelDelete.alpha = 0.20F
+        binding.save.setOnClickListener {
+            if (binding.content.text.isBlank()) showSnackbar("Введите задачу")
+            else {
+                viewModel.addItem(saveItem(null))
+                findNavController().popBackStack()
+            }
+        }
+    }
 
-        val id = item.id
-        val content = binding.content.text.toString()
-        val importance = when(binding.textImportance.text) {
+    private fun redactorItemBind() {
+        objTodo?.let { item ->
+            binding.content.setText(item.content)
+            if (item.deadline != null) {
+                binding.deadline.text = item.deadline.toText()
+                binding.datePicker.isChecked = true
+            }
+            binding.textImportance.text = when (item.importance) {
+                Importance.LOW -> "Низкий"
+                Importance.BASIC -> "Нет"
+                else -> {
+                    "!! Высокий"
+                }
+            }
+            if (binding.textImportance.text == "!! Высокий") binding.textImportance.setTextColor(
+                ContextCompat.getColor(requireContext(), R.color.red)
+            )
+            binding.save.setOnClickListener {
+                if (binding.content.text.isBlank()) showSnackbar("Введите задачу")
+                else {
+                    viewModel.saveItem(saveItem(item))
+                    findNavController().popBackStack()
+                }
+            }
+        }
+    }
+    private fun saveItem(item: TodoItem?): TodoItem {
+        val calendar = Calendar.getInstance()
+
+        val id = item?.id ?: UUID.randomUUID().toString()
+        val content = binding.content.text.toString().trim()
+        val importance = when (binding.textImportance.text) {
             "Низкий" -> Importance.LOW
-            "Нет" -> Importance.NORMAL
-            else -> Importance.HIGH
+            "Нет" -> Importance.BASIC
+            else -> Importance.IMPORTANT
         }
         val deadline = binding.deadline.text.toString().ifBlank { null }
-        val isDone = item.isDone
+        val isDone = item?.isDone ?: false
+        val dateOfCreation = item?.dateOfCreation ?: calendar.time
         val dateOfChange = calendar.time
+        val lastUpdateBy = "test"
 
-        return TodoItem(id,content, importance, deadline.toDate(), isDone, item.dateOfCreation, dateOfChange)
+        return TodoItem(id, content, importance, deadline?.toDate(), null, isDone, dateOfCreation, dateOfChange, lastUpdateBy)
     }
 
     private fun showCalendar(isChecked: Boolean) {
@@ -151,6 +145,7 @@ class ToDoFragment : Fragment() {
                     .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
                     .setNegativeButtonText("Отмена")
                     .setPositiveButtonText("Готово")
+                    .setCalendarConstraints(buildCalendarConstraints())
                     .build()
 
             datePicker.addOnNegativeButtonClickListener {
