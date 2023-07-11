@@ -3,16 +3,23 @@ package com.example.todolist.data.worker
 import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.example.todolist.data.repository.ToDoRepository
+import com.example.todolist.domain.repository.ToDoRepository
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-
-class DataRefreshWorker @Inject constructor(
-    appContext: Context,
-    workerParams: WorkerParameters,
+/**
+ * Worker class responsible for refreshing data in the background using WorkManager.
+ * @property appContext The application context.
+ * @property workerParams The worker parameters.
+ * @property dataRepository The data repository used to fetch the updated data.
+ */
+class DataRefreshWorker @AssistedInject constructor(
+    @Assisted val appContext: Context,
+    @Assisted val workerParams: WorkerParameters,
     private val dataRepository: ToDoRepository
 ) : Worker(appContext, workerParams) {
 
@@ -21,11 +28,22 @@ class DataRefreshWorker @Inject constructor(
     override fun doWork(): Result {
         return try {
             coroutineScope.launch {
-                dataRepository.getItems()
+                dataRepository.syncData()
             }
             Result.success()
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             Result.failure()
         }
+    }
+
+    /**
+     * Factory interface for creating instances of [DataRefreshWorker].
+     */
+    @AssistedFactory
+    interface Factory {
+        fun create(
+            context: Context,
+            params: WorkerParameters,
+        ): DataRefreshWorker
     }
 }
