@@ -13,10 +13,18 @@
         <action
             android:id="@+id/action_toDoListFragment_to_toDoFragment"
             app:destination="@id/toDoFragment" />
+        <action
+            android:id="@+id/action_toDoListFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/toDoFragment"
         android:name="com.example.todolist.presentation.todo.ToDoFragment"
         android:label="fragment_to_do"
         tools:layout="@layout/fragment_to_do" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.todolist.presentation.settings.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
 </navigation>
