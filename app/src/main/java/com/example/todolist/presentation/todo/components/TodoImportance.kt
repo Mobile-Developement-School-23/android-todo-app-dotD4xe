@@ -94,16 +94,8 @@ private fun menu(
                 onAction(TodoAction.UpdateImportance(Importance.LOW))
                 hideMenu()
             },
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.low_importance),
-                    contentDescription = null,
-                    modifier = Modifier.size(24.dp)
-                )
-            },
             colors = MenuDefaults.itemColors(
                 textColor = ExtendedTheme.colors.labelPrimary,
-                leadingIconColor = GrayLight
             )
         )
 
@@ -113,16 +105,8 @@ private fun menu(
                 onAction(TodoAction.UpdateImportance(Importance.IMPORTANT))
                 hideMenu()
             },
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.hight_importance),
-                    contentDescription = null,
-                    modifier = Modifier.size(24.dp)
-                )
-            },
             colors = MenuDefaults.itemColors(
                 textColor = Red,
-                leadingIconColor = Red
             )
         )
     }

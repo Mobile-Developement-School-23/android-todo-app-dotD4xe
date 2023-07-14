@@ -5,6 +5,8 @@ import android.content.Context
 import com.example.todolist.ToDoAppApplication
 import com.example.todolist.data.worker.WorkerFactory
 import com.example.todolist.presentation.MainActivity
+import com.example.todolist.presentation.settings.SettingsFragment
+import com.example.todolist.presentation.settings.di.SettingsComponent
 import com.example.todolist.presentation.todo.di.ToDoComponent
 import com.example.todolist.presentation.todoList.di.ToDoListComponent
 import dagger.BindsInstance
@@ -34,5 +36,6 @@ interface AppComponent {
 
     fun workerFactory(): WorkerFactory
     fun toDoListComponent(): ToDoListComponent.Factory
+    fun settingsComponent(): SettingsComponent.Factory
     fun toDoComponent(): ToDoComponent.Factory
 }

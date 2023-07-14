@@ -39,9 +39,8 @@ class ToDoListFragment : Fragment() {
     private val adapter by lazy {
         ToDoListAdapter(
             onItemClicked = { _, item ->
-                findNavController().navigate(R.id.toDoFragment,Bundle().apply {
-                    putParcelable("Todo",item)
-                })
+                val action = ToDoListFragmentDirections.actionToDoListFragmentToToDoFragment(item)
+                findNavController().navigate(action)
             }
         )
     }
@@ -74,6 +73,11 @@ class ToDoListFragment : Fragment() {
         adapter.setOnDeleteItemListener { viewModel.deleteItem(it) }
 
         binding.visibleTodo.setOnClickListener { viewModel.changeCompletedTodosVisibility() }
+
+        binding.settings.setOnClickListener {
+            val action = ToDoListFragmentDirections.actionToDoListFragmentToSettingsFragment()
+            findNavController().navigate(action)
+        }
 
         binding.addItem.setOnClickListener {
             val action = ToDoListFragmentDirections.actionToDoListFragmentToToDoFragment()

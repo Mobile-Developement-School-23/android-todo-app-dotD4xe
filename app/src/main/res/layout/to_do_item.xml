@@ -7,7 +7,7 @@
     android:id="@+id/item_layout"
     android:clickable="true"
     app:cardCornerRadius="0dp"
-    android:background="@android:color/transparent"
+    android:background="?android:attr/selectableItemBackground"
     android:paddingTop="14dp"
     android:paddingBottom="14dp"
     android:paddingStart="19dp"
