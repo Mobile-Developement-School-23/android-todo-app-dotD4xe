@@ -1,6 +1,11 @@
 package com.example.todolist
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.os.Build
+import android.util.Log
 import androidx.work.Configuration
 import androidx.work.Constraints
 import androidx.work.NetworkType
@@ -37,6 +42,26 @@ class ToDoAppApplication: Application() {
         WorkManager.initialize(this, configuration)
 
         startWorker()
+
+        notificationChanel()
+    }
+
+    private fun notificationChanel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Log.d("ayash", "createChannel")
+            val notificationChannel =
+                NotificationChannel(
+                    "channel_id",
+                    "Deadline notifications",
+                    NotificationManager.IMPORTANCE_HIGH
+                ).apply {
+                    description =
+                        "test"
+                }
+            val notificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(notificationChannel)
+        }
     }
 
     private fun startWorker() {

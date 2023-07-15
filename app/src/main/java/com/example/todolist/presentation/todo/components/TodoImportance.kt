@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.example.todolist.R
@@ -28,9 +29,10 @@ import com.example.todolist.domain.entity.Importance
 import com.example.todolist.presentation.todo.model.TodoAction
 import com.example.todolist.presentation.todo.theme.ExtendedTheme
 import com.example.todolist.presentation.todo.theme.GrayLight
+import com.example.todolist.presentation.todo.theme.todoAppTheme
 
 @Composable
-fun todoImportance(
+fun TodoImportance(
     importance: Importance,
     onAction: (TodoAction) -> Unit
 ) {
@@ -56,7 +58,7 @@ fun todoImportance(
             color = if (isHighImportance) Red else ExtendedTheme.colors.labelTertiary
         )
 
-        menu(
+        Menu(
             expanded = menuExpanded,
             hideMenu = { menuExpanded = false },
             onAction = onAction
@@ -65,7 +67,7 @@ fun todoImportance(
 }
 
 @Composable
-private fun menu(
+private fun Menu(
     expanded: Boolean,
     hideMenu: () -> Unit,
     onAction: (TodoAction) -> Unit
@@ -111,3 +113,12 @@ private fun menu(
         )
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+fun TodoImportancePreview() {
+    todoAppTheme {
+        TodoImportance(Importance.IMPORTANT, onAction = {})
+    }
+}
+

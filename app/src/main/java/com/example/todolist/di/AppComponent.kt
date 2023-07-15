@@ -3,6 +3,7 @@ package com.example.todolist.di
 import android.app.Application
 import android.content.Context
 import com.example.todolist.ToDoAppApplication
+import com.example.todolist.data.notification.NotificationReceiver
 import com.example.todolist.data.worker.WorkerFactory
 import com.example.todolist.presentation.MainActivity
 import com.example.todolist.presentation.settings.SettingsFragment
@@ -35,6 +36,7 @@ interface AppComponent {
     fun inject(activity: MainActivity)
 
     fun workerFactory(): WorkerFactory
+    fun inject(receiver: NotificationReceiver)
     fun toDoListComponent(): ToDoListComponent.Factory
     fun settingsComponent(): SettingsComponent.Factory
     fun toDoComponent(): ToDoComponent.Factory

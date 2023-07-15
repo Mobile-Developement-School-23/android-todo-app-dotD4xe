@@ -1,10 +1,18 @@
 package com.example.todolist.presentation.todoList
 
+import android.Manifest
+import android.app.AlertDialog
 import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -29,6 +37,8 @@ class ToDoListFragment : Fragment() {
 
     private var _binding: FragmentToDoListBinding? = null
     private val binding get() = _binding!!
+
+    private var isPermissionRequested = true
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -67,6 +77,7 @@ class ToDoListFragment : Fragment() {
         setupRefreshLayoutEnabledState()
         initRecyclerView()
         subscribeOnViewModel()
+        requestPermission()
 
         adapter.setOnChangeItemListener { viewModel.checkTodoItem(it) }
 
@@ -127,6 +138,29 @@ class ToDoListFragment : Fragment() {
         val itemTouchHelperCallback = TouchHelperCallback(adapter)
         val touchHelper = ItemTouchHelper(itemTouchHelperCallback)
         touchHelper.attachToRecyclerView(recyclerView)
+    }
+
+    private fun requestPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            when { (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED) -> { }
+                (ActivityCompat.shouldShowRequestPermissionRationale(
+                    requireActivity(),
+                    Manifest.permission.POST_NOTIFICATIONS
+                )) -> { }
+                else -> { requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS) }
+            }
+        }
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (!isGranted) {
+            showSnackbar("Разрешение на отправку уведомлений не было предоставлено")
+        }
     }
 
     override fun onPause() {

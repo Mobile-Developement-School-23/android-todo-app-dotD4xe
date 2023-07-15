@@ -5,6 +5,7 @@ import androidx.room.PrimaryKey
 import com.example.todolist.domain.entity.Importance
 import com.example.todolist.domain.entity.TodoItem
 import com.example.todolist.presentation.util.toDateFromUnixTimestamp
+import com.example.todolist.presentation.util.toUnixTimestamp
 
 /**
  * Entity class representing a Todo item in the database.
@@ -37,4 +38,18 @@ fun List<TodoItemEntity>.toTodoItemList(): List<TodoItem> {
             lastUpdatedBy = entity.last_updated_by
         )
     }
+}
+
+fun TodoItemEntity.toTodoItem(): TodoItem {
+    return TodoItem(
+        id = this.id,
+        content = this.text,
+        importance = Importance.valueOf(this.importance.uppercase()),
+        deadline = this.deadline?.toDateFromUnixTimestamp(),
+        color = this.color,
+        isDone = this.done,
+        dateOfCreation = this.created_at.toDateFromUnixTimestamp(),
+        dateOfChange = this.changed_at.toDateFromUnixTimestamp(),
+        lastUpdatedBy = this.last_updated_by
+    )
 }

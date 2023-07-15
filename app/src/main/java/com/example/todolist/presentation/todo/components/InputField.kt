@@ -19,12 +19,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.todolist.domain.entity.Importance
 import com.example.todolist.presentation.todo.model.TodoAction
+import com.example.todolist.presentation.todo.model.TodoState
 import com.example.todolist.presentation.todo.theme.ExtendedTheme
+import com.example.todolist.presentation.todo.theme.todoAppTheme
+import java.util.Date
 
 @Composable
-fun inputField(
+fun InputField(
     initialDescription: String,
     onAction: (TodoAction) -> Unit
 ) {
@@ -49,7 +54,7 @@ fun inputField(
             ),
             singleLine = false,
             maxLines = 500,
-            minLines = 4,
+            minLines = 6,
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = ExtendedTheme.colors.backSecondary,
@@ -60,43 +65,17 @@ fun inputField(
             placeholder = {
                 Text(
                     text = "Введите описание",
-                    style = TextStyle(color = ExtendedTheme.colors.labelPrimary)
+                    style = TextStyle(color = ExtendedTheme.colors.labelTertiary)
                 )
             }
         )
     }
+}
 
-
-//    BasicTextField(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(top = 8.dp)
-//            .padding(horizontal = 16.dp),
-//        value = description,
-//        onValueChange = { onAction(TodoAction.ContentChange(it)) },
-//        textStyle = MaterialTheme.typography.bodyLarge.copy(
-//            color = ExtendedTheme.colors.labelPrimary
-//        ),
-//        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-//        minLines = 3,
-//        cursorBrush = SolidColor(ExtendedTheme.colors.labelPrimary)
-//    ) { innerTextField ->
-//
-//        Card(
-//            colors = CardDefaults.cardColors(
-//                containerColor = ExtendedTheme.colors.backSecondary,
-//                contentColor = ExtendedTheme.colors.labelTertiary
-//            )
-//        ) {
-//
-//            Box(
-//                modifier = Modifier
-//                    .padding(16.dp)
-//            ) {
-//                if (description.isEmpty())
-//                    Text("test")
-//                innerTextField.invoke()
-//            }
-//        }
-//    }
+@Preview(showBackground = false)
+@Composable
+fun inputFieldPreview() {
+    todoAppTheme {
+        InputField(onAction = {}, initialDescription = "testing")
+    }
 }

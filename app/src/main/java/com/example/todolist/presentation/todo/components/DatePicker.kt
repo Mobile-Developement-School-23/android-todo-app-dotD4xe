@@ -29,11 +29,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.todolist.domain.entity.Importance
 import com.example.todolist.presentation.todo.model.TodoAction
 import com.example.todolist.presentation.todo.model.TodoState
 import com.example.todolist.presentation.todo.theme.Blue
 import com.example.todolist.presentation.todo.theme.BlueTranslucent
 import com.example.todolist.presentation.todo.theme.ExtendedTheme
+import com.example.todolist.presentation.todo.theme.todoAppTheme
 import com.example.todolist.presentation.util.toText
 import java.util.Date
 
@@ -132,5 +134,21 @@ private fun DatePicker(
         ) {
             DatePicker(state = datePickerState)
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun TaskEditDateFieldPreview() {
+    val todoState = TodoState(
+        content = "Task Content",
+        importance = Importance.BASIC,
+        deadline = Date(),
+        isDeadlineVisible = true,
+        isAddItem = true
+    )
+
+    todoAppTheme {
+        TaskEditDateField(state = todoState, onAction = {})
     }
 }
