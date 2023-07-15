@@ -1,7 +1,6 @@
 package com.example.todolist.presentation.todoList
 
 import android.Manifest
-import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
@@ -10,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -37,8 +35,6 @@ class ToDoListFragment : Fragment() {
 
     private var _binding: FragmentToDoListBinding? = null
     private val binding get() = _binding!!
-
-    private var isPermissionRequested = true
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -159,7 +155,7 @@ class ToDoListFragment : Fragment() {
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
         if (!isGranted) {
-            showSnackbar("Разрешение на отправку уведомлений не было предоставлено")
+            showSnackbar(getString(R.string.error_notification))
         }
     }
 

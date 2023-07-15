@@ -22,8 +22,8 @@
         android:id="@+id/label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Настройки"
-        android:textSize="20sp"
+        android:text="@string/settings"
+        style="@style/Title"
         android:layout_marginTop="10dp"
         android:textColor="@color/colorText"
         android:textStyle="bold"
@@ -43,24 +43,24 @@
 
         <RadioButton
             android:id="@+id/night"
-            android:textSize="18sp"
+            style="@style/DefaultText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Темная" />
+            android:text="@string/theme_night" />
 
         <RadioButton
             android:id="@+id/light"
-            android:textSize="18sp"
+            style="@style/DefaultText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Светлая" />
+            android:text="@string/theme_light" />
 
         <RadioButton
             android:id="@+id/system"
-            android:textSize="18sp"
+            style="@style/DefaultText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Системная" />
+            android:text="@string/theme_system" />
     </RadioGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

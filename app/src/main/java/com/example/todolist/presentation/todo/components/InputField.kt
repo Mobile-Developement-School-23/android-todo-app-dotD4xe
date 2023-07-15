@@ -16,17 +16,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.todolist.domain.entity.Importance
+import com.example.todolist.R
 import com.example.todolist.presentation.todo.model.TodoAction
-import com.example.todolist.presentation.todo.model.TodoState
 import com.example.todolist.presentation.todo.theme.ExtendedTheme
-import com.example.todolist.presentation.todo.theme.todoAppTheme
-import java.util.Date
+import com.example.todolist.presentation.todo.theme.TodoAppTheme
 
 @Composable
 fun InputField(
@@ -64,7 +63,7 @@ fun InputField(
             ),
             placeholder = {
                 Text(
-                    text = "Введите описание",
+                    text = stringResource(R.string.text_for_field),
                     style = TextStyle(color = ExtendedTheme.colors.labelTertiary)
                 )
             }
@@ -74,8 +73,8 @@ fun InputField(
 
 @Preview(showBackground = false)
 @Composable
-fun inputFieldPreview() {
-    todoAppTheme {
+fun InputFieldPreview() {
+    TodoAppTheme {
         InputField(onAction = {}, initialDescription = "testing")
     }
 }

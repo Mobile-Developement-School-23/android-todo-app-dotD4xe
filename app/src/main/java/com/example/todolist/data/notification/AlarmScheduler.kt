@@ -33,8 +33,4 @@ class AlarmScheduler @Inject constructor(
             pendingIntent
         )
     }
-
-    fun cancelAlarm() {
-        alarmManager.cancel(pendingIntent)
-    }
 }

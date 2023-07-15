@@ -30,13 +30,13 @@ import com.example.todolist.presentation.todo.components.AppBarPreview
 import com.example.todolist.presentation.todo.components.ButtonDelete
 import com.example.todolist.presentation.todo.components.ButtonDeletePreview
 import com.example.todolist.presentation.todo.components.InputField
+import com.example.todolist.presentation.todo.components.InputFieldPreview
 import com.example.todolist.presentation.todo.components.TaskEditDateField
 import com.example.todolist.presentation.todo.components.TaskEditDateFieldPreview
 import com.example.todolist.presentation.todo.components.TodoImportance
 import com.example.todolist.presentation.todo.components.TodoImportancePreview
-import com.example.todolist.presentation.todo.components.inputFieldPreview
 import com.example.todolist.presentation.todo.theme.ExtendedTheme
-import com.example.todolist.presentation.todo.theme.todoAppTheme
+import com.example.todolist.presentation.todo.theme.TodoAppTheme
 import com.example.todolist.presentation.util.getParcelableCompat
 import javax.inject.Inject
 
@@ -61,7 +61,7 @@ class ToDoFragment : Fragment() {
         savedInstanceState: Bundle?
     ) = ComposeView(requireContext()).apply {
             setContent {
-                todoAppTheme() {
+                TodoAppTheme() {
                     ToDoScreen()
                 }
             }
@@ -77,7 +77,8 @@ class ToDoFragment : Fragment() {
         Scaffold(
             topBar = { AppBar(
                 navController = findNavController(),
-                viewModel::onAction
+                onAction = viewModel::onAction,
+                content = state.content
             ) },
             containerColor = ExtendedTheme.colors.backPrimary
         ) { paddingValues ->
@@ -106,7 +107,6 @@ class ToDoFragment : Fragment() {
                     color = ExtendedTheme.colors.supportOverlay
                 )
 
-
                 TaskEditDateField(state, viewModel::onAction)
 
                 Divider(
@@ -130,7 +130,7 @@ class ToDoFragment : Fragment() {
     @Preview(showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
     @Composable
     fun ToDoScreenPreview() {
-        todoAppTheme() {
+        TodoAppTheme() {
             Scaffold(
                 topBar = { AppBarPreview() },
                 containerColor = ExtendedTheme.colors.backPrimary
@@ -142,7 +142,7 @@ class ToDoFragment : Fragment() {
                         .padding(paddingValues)
                 ) {
 
-                    inputFieldPreview()
+                    InputFieldPreview()
 
                     TodoImportancePreview()
 

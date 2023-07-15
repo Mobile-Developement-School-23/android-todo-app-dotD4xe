@@ -4,11 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,17 +17,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color.Companion.Red
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.example.todolist.R
 import com.example.todolist.domain.entity.Importance
 import com.example.todolist.presentation.todo.model.TodoAction
 import com.example.todolist.presentation.todo.theme.ExtendedTheme
-import com.example.todolist.presentation.todo.theme.GrayLight
-import com.example.todolist.presentation.todo.theme.todoAppTheme
+import com.example.todolist.presentation.todo.theme.TodoAppTheme
 
 @Composable
 fun TodoImportance(
@@ -38,6 +33,12 @@ fun TodoImportance(
 ) {
     val isHighImportance = remember(importance) { importance == Importance.IMPORTANT }
     var menuExpanded by remember { mutableStateOf(false) }
+
+    val textImportance = when(importance) {
+        Importance.BASIC -> stringResource(R.string.no)
+        Importance.IMPORTANT -> stringResource(R.string.hight)
+        else -> stringResource(R.string.low)
+    }
 
     Column(
         modifier = Modifier
@@ -48,12 +49,11 @@ fun TodoImportance(
             .padding(4.dp)
     ) {
         Text(
-            text = "Priority",
+            text = stringResource(R.string.importance),
             color = ExtendedTheme.colors.labelPrimary
         )
         Text(
-            //iiii
-            text = importance.toString(),
+            text = textImportance,
             modifier = Modifier.padding(top = 4.dp),
             color = if (isHighImportance) Red else ExtendedTheme.colors.labelTertiary
         )
@@ -76,8 +76,7 @@ private fun Menu(
         expanded = expanded,
         onDismissRequest = hideMenu,
         modifier = Modifier
-            .background(ExtendedTheme.colors.backElevated),
-        offset = DpOffset(x = 52.dp, y = (-18).dp)
+            .background(ExtendedTheme.colors.backElevated)
     ) {
         DropdownMenuItem(
             text = { Text(stringResource(R.string.no)) },
@@ -117,7 +116,7 @@ private fun Menu(
 @Preview(showBackground = true)
 @Composable
 fun TodoImportancePreview() {
-    todoAppTheme {
+    TodoAppTheme {
         TodoImportance(Importance.IMPORTANT, onAction = {})
     }
 }

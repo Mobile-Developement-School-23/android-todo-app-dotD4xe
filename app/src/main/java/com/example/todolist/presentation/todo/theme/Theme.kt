@@ -64,7 +64,7 @@ val LocalExtendedColors = staticCompositionLocalOf {
  * App Compose theme
  */
 @Composable
-fun todoAppTheme(
+fun TodoAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,

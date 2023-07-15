@@ -3,7 +3,6 @@ package com.example.todolist.presentation.util
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -15,8 +14,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.ZoneOffset
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
@@ -31,11 +28,6 @@ fun Fragment.showSnackbar(message: String, duration: Int = Snackbar.LENGTH_LONG)
 
 fun View.show(){
     visibility = View.VISIBLE
-}
-
-fun String?.toDate(): Date? {
-    val format = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
-    return this?.let { format.parse(it) }
 }
 
 fun Date.toText(): String {

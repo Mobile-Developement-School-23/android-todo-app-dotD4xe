@@ -18,18 +18,20 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.todolist.R
 import com.example.todolist.presentation.todo.model.TodoAction
 import com.example.todolist.presentation.todo.theme.ExtendedTheme
-import com.example.todolist.presentation.todo.theme.todoAppTheme
+import com.example.todolist.presentation.todo.theme.TodoAppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBar(
+    content: String,
     navController: NavController,
     onAction: (TodoAction) -> Unit
 ) {
@@ -43,7 +45,7 @@ fun AppBar(
         navigationIcon = {
             Icon(
                 imageVector = Icons.Default.Close,
-                contentDescription = "Close",
+                contentDescription = "navigate back",
                 tint = ExtendedTheme.colors.labelPrimary,
                 modifier = Modifier
                     .clickable { navController.navigateUp() }
@@ -57,14 +59,14 @@ fun AppBar(
                     onAction(TodoAction.SaveTodo)
                     navController.popBackStack()
                 },
-//                            enabled = content.isNotBlank(),
+                enabled = content.trim().isNotBlank(),
                 colors = ButtonDefaults.textButtonColors(
                     contentColor = Color.Blue,
-//                                disabledContentColor = saveButtonColor
+                    disabledContentColor = ExtendedTheme.colors.labelDisable
                 )
             ) {
                 Text(
-                    text = "save",
+                    text = stringResource(R.string.save),
                     style = MaterialTheme.typography.titleMedium
                 )
             }
@@ -78,8 +80,8 @@ fun AppBarPreview() {
     val localNavController = compositionLocalOf<NavController> { error("No NavController found!") }
     val navController = rememberNavController()
     CompositionLocalProvider(localNavController provides navController) {
-        todoAppTheme {
-            AppBar(navController = navController, onAction = {})
+        TodoAppTheme {
+            AppBar(navController = navController, onAction = {}, content = "Testing")
         }
     }
 }

@@ -16,7 +16,6 @@ class SettingsDataStore(private val dataStore: DataStore<Preferences>) {
             preferences[themeKey] = theme
         }
     }
-
     suspend fun readTheme(): Int {
         return dataStore.data
             .map { preferences ->

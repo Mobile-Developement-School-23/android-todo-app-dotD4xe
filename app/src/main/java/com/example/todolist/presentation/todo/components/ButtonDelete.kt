@@ -1,16 +1,13 @@
 package com.example.todolist.presentation.todo.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -29,7 +26,7 @@ import com.example.todolist.R
 import com.example.todolist.presentation.todo.model.TodoAction
 import com.example.todolist.presentation.todo.theme.ExtendedTheme
 import com.example.todolist.presentation.todo.theme.Red
-import com.example.todolist.presentation.todo.theme.todoAppTheme
+import com.example.todolist.presentation.todo.theme.TodoAppTheme
 
 @Composable
 fun ButtonDelete(
@@ -58,7 +55,7 @@ fun ButtonDelete(
         )
         Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
         Text(
-            text = "Delete",
+            text = stringResource(R.string.delete_label),
             color = tint,
             style = MaterialTheme.typography.body1,
         )
@@ -71,7 +68,7 @@ fun ButtonDeletePreview() {
     val localNavController = compositionLocalOf<NavController> { error("No NavController found!") }
     val navController = rememberNavController()
     CompositionLocalProvider(localNavController provides navController) {
-        todoAppTheme {
+        TodoAppTheme {
             ButtonDelete(enabled = true, onClick = {}, navController)
         }
     }

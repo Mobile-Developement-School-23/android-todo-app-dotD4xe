@@ -27,15 +27,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.todolist.R
 import com.example.todolist.domain.entity.Importance
 import com.example.todolist.presentation.todo.model.TodoAction
 import com.example.todolist.presentation.todo.model.TodoState
 import com.example.todolist.presentation.todo.theme.Blue
 import com.example.todolist.presentation.todo.theme.BlueTranslucent
 import com.example.todolist.presentation.todo.theme.ExtendedTheme
-import com.example.todolist.presentation.todo.theme.todoAppTheme
+import com.example.todolist.presentation.todo.theme.TodoAppTheme
 import com.example.todolist.presentation.util.toText
 import java.util.Date
 
@@ -64,7 +66,7 @@ fun TaskEditDateField(
 
         Column {
             Text(
-                text = "Сделать до",
+                text = stringResource(R.string.deadline_label),
                 modifier = Modifier.padding(start = 4.dp),
                 color = ExtendedTheme.colors.labelPrimary
             )
@@ -121,14 +123,14 @@ private fun DatePicker(
                     },
                     enabled = confirmEnabled
                 ) {
-                    Text("Ok")
+                    Text(stringResource(R.string.ok))
                 }
             },
             dismissButton = {
                 TextButton(
                     onClick = closePicker
                 ) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         ) {
@@ -148,7 +150,7 @@ fun TaskEditDateFieldPreview() {
         isAddItem = true
     )
 
-    todoAppTheme {
+    TodoAppTheme {
         TaskEditDateField(state = todoState, onAction = {})
     }
 }

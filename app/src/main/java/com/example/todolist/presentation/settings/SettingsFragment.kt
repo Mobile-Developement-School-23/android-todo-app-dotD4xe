@@ -1,9 +1,7 @@
 package com.example.todolist.presentation.settings
 
 import android.content.Context
-import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,12 +11,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.example.todolist.R
 import com.example.todolist.ToDoAppApplication
-import com.example.todolist.data.database.AppDatabase
-import com.example.todolist.data.network.api.TodoApiService
 import com.example.todolist.databinding.FragmentSettingsBinding
-import com.example.todolist.presentation.util.DataStoreManager
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -78,7 +72,6 @@ class SettingsFragment : Fragment() {
     private fun toggleTheme(theme: Int){
         lifecycleScope.launch {
             dataStoreManager.saveTheme(theme)
-//            requireActivity().recreate()
             AppCompatDelegate.setDefaultNightMode(theme)
         }
     }

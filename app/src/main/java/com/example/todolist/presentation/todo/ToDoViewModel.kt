@@ -6,14 +6,12 @@ import com.example.todolist.domain.entity.TodoItem
 import com.example.todolist.domain.repository.ToDoRepository
 import com.example.todolist.presentation.todo.model.TodoAction
 import com.example.todolist.presentation.todo.model.TodoState
-import com.example.todolist.presentation.util.toDateFromUnixTimestamp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.Calendar
 import java.util.Date
 import java.util.UUID
@@ -67,7 +65,7 @@ class ToDoViewModel @Inject constructor(
         }
     }
 
-    fun saveItem() {
+    private fun saveItem() {
         val item = todoItem!!.copy(
             content = todoState.value.content,
             importance = todoState.value.importance,
@@ -79,7 +77,7 @@ class ToDoViewModel @Inject constructor(
         }
     }
 
-    fun deleteItem() {
+    private fun deleteItem() {
         CoroutineScope(Dispatchers.IO).launch {
             if (todoItem != null) repository.deleteItem(todoItem!!)
         }
