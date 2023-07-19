@@ -24,13 +24,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
-            app:title="Мои дела"
-            android:fontFamily="@font/roboto_medium"
+            app:title="@string/my_todo"
             app:statusBarScrim="@android:color/transparent"
             app:expandedTitleMarginStart="65dp"
             app:expandedTitleMarginBottom="60dp"
-            app:expandedTitleTextAppearance="@style/Toolbar_ExpandedTitleTextAppearance_Big"
-            app:collapsedTitleTextAppearance="@style/Toolbar.TitleTextAppearance"
+            app:expandedTitleTextAppearance="@style/LargeTitle"
+            app:collapsedTitleTextAppearance="@style/Title"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:titleEnabled="true"
             android:background="@color/colorBackground"
@@ -50,8 +49,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/done"
                 android:alpha="0.3"
-                android:textSize="20sp"
-                android:fontFamily="@font/roboto_regular"
+                style="@style/SubTitle"
                 android:layout_marginStart="65dp"
                 android:paddingBottom="20dp"
                 android:layout_gravity="bottom"
@@ -74,12 +72,26 @@
                 android:id="@+id/visible_todo"
                 android:layout_width="27dp"
                 android:layout_height="27dp"
+                android:background="?android:attr/selectableItemBackground"
                 android:src="@drawable/visibility"
                 android:layout_gravity="bottom|end"
-                android:layout_marginBottom="17dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginEnd="70dp"
+                app:layout_collapseMode="pin"
+                app:tint="@color/blue" />
+
+            <ImageView
+                android:id="@+id/settings"
+                android:layout_width="27dp"
+                android:layout_height="27dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:src="@drawable/icons_settings"
+                android:layout_gravity="bottom|end"
+                android:layout_marginBottom="15dp"
                 android:layout_marginEnd="22dp"
                 app:layout_collapseMode="pin"
                 app:tint="@color/blue" />
+
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
@@ -126,6 +138,7 @@
         app:srcCompat="@drawable/add"
         app:maxImageSize="17dp"
         app:fabCustomSize="70dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
         android:backgroundTint="@color/colorFloatingButton"
         android:layout_gravity="bottom|end"
         android:importantForAccessibility="no" />

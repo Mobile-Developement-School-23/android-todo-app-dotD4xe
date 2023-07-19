@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ToDoList</string>
+    <string name="my_todo">Мои Дела</string>
+    <string name="done">Выполнено — %d</string>
+    <string name="save">СОХРАНИТЬ</string>
+    <string name="text_for_field">Что надо сделать…\n\n\n</string>
+    <string name="importance">Важность</string>
+    <string name="deadline_label">Сделать до</string>
+    <string name="delete_label">Удалить</string>
+    <string name="no">Нет</string>
+    <string name="low">Низкий</string>
+    <string name="hight">!! Высокий</string>
+    <string name="theme_light">Светлая тема</string>
+    <string name="theme_night">Темная тема</string>
+    <string name="theme_system">Системная тема</string>
+    <string name="cancel">Отмена</string>
+    <string name="ok">ОК</string>
+    <string name="settings">Настройки</string>
+    <string name="error_notification">Разрешение на отправку уведомлений не было предоставлено</string>
+    <string name="notification_title">Дедлайн!</string>
+    <string name="notification_content">%1$s Важность: %2$s</string>
+</resources>

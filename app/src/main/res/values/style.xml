@@ -14,4 +14,11 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="DatePickerStyle" parent="Theme.AppCompat.Light.Dialog">
+
+
+    </style>
+
+
+
 </resources>

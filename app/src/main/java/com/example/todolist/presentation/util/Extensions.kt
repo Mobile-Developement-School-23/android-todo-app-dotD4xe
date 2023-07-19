@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -29,13 +30,8 @@ fun View.show(){
     visibility = View.VISIBLE
 }
 
-fun String?.toDate(): Date? {
-    val format = SimpleDateFormat("dd MMMM yyyy", Locale("ru"))
-    return this?.let { format.parse(it) }
-}
-
 fun Date.toText(): String {
-    val format = SimpleDateFormat("dd MMMM yyyy", Locale("ru"))
+    val format = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
     return format.format(this)
 }
 
@@ -46,6 +42,13 @@ fun Long.toDateFromUnixTimestamp(): Date {
 fun Date.toUnixTimestamp(): Long {
     return this.time / MILLISECONDS
 }
+
+val currentDate: Date
+    get() {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DAY_OF_MONTH, 1)
+        return calendar.time
+    }
 
 fun <T> Flow<T>.repeatOnCreated(lifecycleOwner: LifecycleOwner) {
     lifecycleOwner.lifecycleScope.launch {

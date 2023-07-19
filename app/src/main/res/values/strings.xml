@@ -1,13 +1,22 @@
 <resources>
     <string name="app_name">ToDoList</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="done">Выполнено — %d</string>
-    <string name="save">СОХРАНИТЬ</string>
-    <string name="text_for_field">Что надо сделать…\n\n\n</string>
-    <string name="importance">Важность</string>
-    <string name="deadline_label">Сделать до</string>
-    <string name="delete_label">Удалить</string>
-    <string name="no">Нет</string>
-    <string name="low">Низкий</string>
-    <string name="hight">!! Высокий</string>
+    <string name="my_todo">Todo</string>
+    <string name="done">Done — %d</string>
+    <string name="save">SAVE</string>
+    <string name="text_for_field">Something…</string>
+    <string name="importance">Importance</string>
+    <string name="deadline_label">Make until</string>
+    <string name="delete_label">Delete</string>
+    <string name="no">Basic</string>
+    <string name="low">Low</string>
+    <string name="hight">!! Important</string>
+    <string name="theme_light">Light theme</string>
+    <string name="theme_night">Dark theme</string>
+    <string name="theme_system">System theme</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="settings">Settings</string>
+    <string name="error_notification">Permission to send notifications has not been granted</string>
+    <string name="notification_title">Deadline!</string>
+    <string name="notification_content">%1$s Importance: %2$s</string>
 </resources>

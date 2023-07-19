@@ -1,10 +1,16 @@
 package com.example.todolist.presentation.todoList
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -39,9 +45,8 @@ class ToDoListFragment : Fragment() {
     private val adapter by lazy {
         ToDoListAdapter(
             onItemClicked = { _, item ->
-                findNavController().navigate(R.id.toDoFragment,Bundle().apply {
-                    putParcelable("Todo",item)
-                })
+                val action = ToDoListFragmentDirections.actionToDoListFragmentToToDoFragment(item)
+                findNavController().navigate(action)
             }
         )
     }
@@ -68,12 +73,18 @@ class ToDoListFragment : Fragment() {
         setupRefreshLayoutEnabledState()
         initRecyclerView()
         subscribeOnViewModel()
+        requestPermission()
 
         adapter.setOnChangeItemListener { viewModel.checkTodoItem(it) }
 
         adapter.setOnDeleteItemListener { viewModel.deleteItem(it) }
 
         binding.visibleTodo.setOnClickListener { viewModel.changeCompletedTodosVisibility() }
+
+        binding.settings.setOnClickListener {
+            val action = ToDoListFragmentDirections.actionToDoListFragmentToSettingsFragment()
+            findNavController().navigate(action)
+        }
 
         binding.addItem.setOnClickListener {
             val action = ToDoListFragmentDirections.actionToDoListFragmentToToDoFragment()
@@ -123,6 +134,29 @@ class ToDoListFragment : Fragment() {
         val itemTouchHelperCallback = TouchHelperCallback(adapter)
         val touchHelper = ItemTouchHelper(itemTouchHelperCallback)
         touchHelper.attachToRecyclerView(recyclerView)
+    }
+
+    private fun requestPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            when { (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED) -> { }
+                (ActivityCompat.shouldShowRequestPermissionRationale(
+                    requireActivity(),
+                    Manifest.permission.POST_NOTIFICATIONS
+                )) -> { }
+                else -> { requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS) }
+            }
+        }
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (!isGranted) {
+            showSnackbar(getString(R.string.error_notification))
+        }
     }
 
     override fun onPause() {
